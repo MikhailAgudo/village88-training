@@ -3,6 +3,7 @@ for(var i=0; i<5;i++){
    console.log(i);
 }
 ```
+### Correct
 1. 0
 2. 1
 3. 2
@@ -16,11 +17,16 @@ for(var i=0; i<5; i++)
    console.log(i);
 }
 ```
+### Wrong
 1. 1
 2. 2
 3. 3
 4. 4
 5. 5
+### Correct
+1. 1
+2. 3
+3. 5
 
 ```javascript
 for(var i=0; i<5; i++)
@@ -29,11 +35,15 @@ for(var i=0; i<5; i++)
    console.log(i);
 }
 ```
+### Wrong
 1. 3
 2. 4
 3. 5
 4. 6
 5. 7
+### Correct
+1. 3
+2. 7
 
 ```javascript
 function y(num1, num2){   
@@ -42,6 +52,7 @@ function y(num1, num2){
 console.log(y(2,3))
 console.log(y(3,5))
 ```
+### Correct
 1. 5
 2. 8
 
@@ -53,6 +64,7 @@ function y(num1, num2){
 console.log(y(2,3))
 console.log(y(3,5))
 ```
+### Correct
 1. 2
 2. 5
 3. 3
@@ -68,6 +80,7 @@ function y(a){
 b = y(10);
 console.log(b);
 ```
+### Correct
 1. 15
 2. 10
 3. 10
@@ -82,6 +95,7 @@ function y(a){
 b = y(10);
 console.log(b);
 ```
+### Correct
 1. 15
 2. 10
 3. 20
