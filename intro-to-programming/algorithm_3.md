@@ -8,10 +8,17 @@ function multiply(x,y){
 b = multiply(2,3);
 console.log(b);
 ```
+### Wrong
 1. 2
 2. 3
 3. 2
 4. 3
+
+### Correct
+1. 2
+2. 3
+3. undefined
+*Because it is the method that was displayed, and multiply() was not repeated*
 
 ```javascript
 function multiply(x,y){
@@ -21,6 +28,7 @@ b = multiply(2,3);
 console.log(b);
 console.log(multiply(5,2));
 ```
+### Correct
 1. 6
 2. 10
 
@@ -32,7 +40,13 @@ for(var i=0; i<5; i++)
    console.log(i);
 }
 ```
+### Wrong
 1. 3
+
+### Correct
+1. 3
+2. 7
+*Because $i becomes 7 before the for loop checks if it should loop again; it does not necessarily break just because the i went over the condition*
 
 ```javascript
 var x=15;
@@ -45,6 +59,7 @@ console.log(x);
 awesome();
 console.log(x);
 ```
+### Correct
 1. 15
 2. 15
 3. 10
@@ -55,6 +70,7 @@ for(var i=0; i<15; i+=2){
    console.log(i);
 }
 ```
+### Correct
 1. 0
 2. 2
 3. 4
@@ -71,6 +87,7 @@ for(var i=0; i<3; i++){
    }
 }
 ```
+### Correct
 1. 0
 2. 0
 3. 0
@@ -89,6 +106,7 @@ function looping(x,y){
 z = looping(3,3);
 console.log(z);
 ```
+### Wrong
 1. 0
 2. 0
 3. 0
@@ -99,6 +117,19 @@ console.log(z);
 8. 2
 9. 4
 10. function()
+
+### Correct
+1. 0
+2. 0
+3. 0
+4. 0
+5. 1
+6. 2
+7. 0
+8. 2
+9. 4
+10. undefined
+*A function that is executed i.e. it has "()", becomes undefined... the variable does not become the function*
 
 ```javascript
 function looping(x,y){
@@ -112,6 +143,7 @@ function looping(x,y){
 z = looping(3,5);
 console.log(z);
 ```
+### Correct
 1. 0
 2. 0
 3. 0
@@ -139,6 +171,7 @@ printUpTo(1000); // should print all the integers from 1 to 1000
 y = printUpTo(-10); // should return false
 console.log(y); // should print false
 ```
+### Correct
 ```javascript
 // Answer
 function printUpTo(x){
@@ -150,6 +183,9 @@ function printUpTo(x){
 		return false;
 	}
 }
+printUpTo(1000); // should print all the integers from 1 to 1000
+y = printUpTo(-10); // should return false
+console.log(y); // should print false
 ```
 
 ```javascript
@@ -161,6 +197,7 @@ function printSum(x){
 y = printSum(255) // should print all the integers from 0 to 255 and with each integer print the sum so far.
 console.log(y) // should print 32640
 ```
+### Correct
 ```javascript
 // Answer
 function printSum(x){
@@ -184,6 +221,7 @@ function printSumArray(x){
 }
 console.log( printSumArray([1,2,3]) ); // should log 6
 ```
+### Correct
 ```javascript
 // Answer
 function printSumArray(x){
