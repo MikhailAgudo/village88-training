@@ -13,24 +13,36 @@ body {
     height: 2em;
 }
 
+.world {
+
+}
+
+.entity {
+    position: absolute;
+}
+
 div.row div{ 
     width: 2em;
     height: 2em;
     display: inline-block;
 }
 
-div.brick {
-    background-color: blue;
-    position: absolute;
+.pacman {
+    background: url('./img/pacman.gif');
+    background-size: cover;
+    background-position: center;
 }
 
-div.coin {
+.brick {
+    background-color: blue;
+}
+
+.coin {
     background: url('./img/coin-knux400.gif');
     background-size: cover;
     background-position: center;
-    position: absolute;
 }
 
-div.empty {
+.empty {
 
 }
