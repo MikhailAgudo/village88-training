@@ -90,40 +90,41 @@ const Pacman = (() => {
 })();
 
 const Level = (() => {
-    let world;
+    let dimensions = {
+        height: 0,
+        width: 0
+    };
 
     const initialize = (height, width) => {
-        world = createWorld(height, width);
+        createWorld(height, width);
+        dimensions.height = height;
+        dimensions.width = width;
     }
 
     const createWorld = (height, width) => {
-        let newWorld = [];
-
         for ( let i = 0; i < height; i++ ) {
             if ( i === 0 || i === (height - 1) ) {
-                newWorld.push(addRow(width, true));
+                addRow(width, i, true);
             } else {
-                newWorld.push(addRow(width, false));
+                addRow(width, i, false);
             }
         }
-
-        return newWorld;
     }
 
-    const addRow = (width, isEdge) => {
-        let newRow = [];
-
-        for ( let i = 0; i < width; i++ ) {
+    const addRow = (width, height, isEdge) => {
+        for ( let i = 0; i <= (width - 1); i++ ) {
+            let newWall = Entity((i * Game.SIZE), (height * Game.SIZE), 'wall', [
+                'entity',
+                'brick'
+            ]);
             if ( isEdge === true ) {
-                newRow.push(2);
+                Game.pushEntities(newWall);
             } else if ( i === 0 || i === (width - 1) ) {
-                newRow.push(2);
-            } else {
-                newRow.push(1);
-            }
+                Game.pushEntities(newWall);
+            } //else {
+            //    newRow.push(1);
+            //}
         }
-
-        return newRow;
     }
 
     const displayWorld = () => {
@@ -176,14 +177,19 @@ const Game = (() => {
             'brick'
         ]);
 
+        let coin = Entity(100, 100, 'coin', [
+            'entity',
+            'coin'
+        ]);
+
         entities.push(wall);
+        entities.push(coin);
 
         Pacman.controlsGame();
         setInterval(loop, 33);
     }
 
     const loop = () => {
-        console.log('tick');
         update();
         display();
     }
@@ -195,7 +201,8 @@ const Game = (() => {
         }
 
         for ( let i = 0; i < entities.length; i++ ) {
-            if ( checkCollision(entities[i]) === true || entities[i].type === 'coin' ) {
+            if ( checkCollision(entities[i]) === true && entities[i].type === 'coin' ) {
+                console.log('Collide!');
                 score++;
                 entities.splice(i, 1);
                 i--;
@@ -244,12 +251,20 @@ const Game = (() => {
             currentEntity.property.style.left = currentEntity.position.x;
         }
     }
+
+    const pushEntities = (entity) => {
+        console.log(entity);
+        entities.push(entity);
+    }
+
     return {
-        start
+        start,
+        pushEntities,
+        SIZE
     }
 })();
 
-
+Level.initialize(10, 20);
 Game.start();
 //Level.initialize(9, 10);
 //console.log(Level.displayWorld());
