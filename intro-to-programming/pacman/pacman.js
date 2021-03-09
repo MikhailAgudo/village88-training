@@ -47,7 +47,7 @@ const Pacman = (() => {
         'entity'
     ])
 
-    const SPEED = 5;
+    const SPEED = 4;
     let movement = {
         x: SPEED,
         y: 0
@@ -95,10 +95,65 @@ const Level = (() => {
         width: 0
     };
 
-    const initialize = (height, width) => {
-        createWorld(height, width);
-        dimensions.height = height;
-        dimensions.width = width;
+    let worlds = {
+        maze: [
+            '2222222222222222222',
+            '2000000002000000002',
+            '2022022202022202202',
+            '2000000000000000002',
+            '2022020222220202202',
+            '2000020002000200002',
+            '2222022202022202222',
+            '2222020000000202222',
+            '2222000222220002222',
+            '2222020000000202222',
+            '2222022202022202222',
+            '2000020002000200002',
+            '2022020222220202202',
+            '2000000003000000002',
+            '2022022202022202202',
+            '2000000002000000002',
+            '2222222222222222222',
+            ]
+    }
+
+    const initialize = () => {
+        loadWorld(worlds.maze);
+        //createWorld(height, width);
+
+        //dimensions.height = height * Game.SIZE;
+        //dimensions.width = width * Game.SIZE;
+
+        //Pacman.character.position.x = dimensions.width / 2;
+        //Pacman.character.position.y = dimensions.height / 2;
+
+        //Game.pushEntities(Pacman.character);
+    }
+
+    const loadWorld = (array) => {
+        for ( let y = 0; y < array.length; y++ ) {
+            for ( let x = 0; x < array[y].length; x++ ) {
+                let newEntity = getEntity(array[y][x], x, y);
+                Game.pushEntities(newEntity);
+            }
+        }
+    }
+
+    const getEntity = (number, x, y) => {
+        number = parseInt(number);
+        x *= Game.SIZE;
+        y *= Game.SIZE;
+
+        switch ( number ) {
+            case 0:
+                return Entity(x, y, 'coin', ['entity', 'coin']);
+            case 2:
+                return Entity(x, y, 'wall', ['entity', 'brick']);
+            case 3:
+                Pacman.character.position.x = x;
+                Pacman.character.position.y = y;
+                return Pacman.character;
+        }
     }
 
     const createWorld = (height, width) => {
@@ -156,7 +211,8 @@ const Level = (() => {
 
     return {
         initialize,
-        displayWorld
+        displayWorld,
+        dimensions
     }
 })();
 
@@ -170,20 +226,6 @@ const Game = (() => {
 
     const start = () => {
         gameplay = true;
-        entities.push(pacman);
-
-        let wall = Entity(50, 50, 'brick', [
-            'entity',
-            'brick'
-        ]);
-
-        let coin = Entity(100, 100, 'coin', [
-            'entity',
-            'coin'
-        ]);
-
-        entities.push(wall);
-        entities.push(coin);
 
         Pacman.controlsGame();
         setInterval(loop, 33);
@@ -253,7 +295,6 @@ const Game = (() => {
     }
 
     const pushEntities = (entity) => {
-        console.log(entity);
         entities.push(entity);
     }
 
@@ -264,7 +305,5 @@ const Game = (() => {
     }
 })();
 
-Level.initialize(10, 20);
+Level.initialize();
 Game.start();
-//Level.initialize(9, 10);
-//console.log(Level.displayWorld());
