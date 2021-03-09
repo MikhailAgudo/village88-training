@@ -13,6 +13,14 @@ body {
     height: 2em;
 }
 
+#score {
+    color: white;
+    text-align: center;
+    border: 1px solid white;
+    position: absolute;
+    left: 400px;
+}
+
 .world {
 
 }
@@ -38,7 +46,13 @@ div.row div{
 }
 
 .coin {
-    background: url('./img/coin-knux400.gif');
+    background: url('./img/coin.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.cherry {
+    background: url('./img/cherry.png');
     background-size: cover;
     background-position: center;
 }

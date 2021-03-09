@@ -101,7 +101,7 @@ const Level = (() => {
             '2000000002000000002',
             '2022022202022202202',
             '2000000000000000002',
-            '2022020222220202202',
+            '2022024222224202202',
             '2000020002000200002',
             '2222022202022202222',
             '2222020000000202222',
@@ -153,6 +153,8 @@ const Level = (() => {
                 Pacman.character.position.x = x;
                 Pacman.character.position.y = y;
                 return Pacman.character;
+            case 4:
+                return Entity(x, y, 'cherry', ['entity', 'cherry']);
         }
     }
 
@@ -223,9 +225,11 @@ const Game = (() => {
     let gameplay = false;
     let pacman = Pacman.character;
     let world = document.querySelector('.world');
+    let scorer = document.getElementById('score');
 
     const start = () => {
         gameplay = true;
+        scorer.textContent = score;
 
         Pacman.controlsGame();
         setInterval(loop, 33);
@@ -238,14 +242,17 @@ const Game = (() => {
 
     const update = () => {
         let pacmanCollision = checkPacmanCollision(pacman, Pacman.movement);
-        if ( pacmanCollision === 'coin' || pacmanCollision === false ) {
+        if ( pacmanCollision === 'coin' || pacmanCollision === 'cherry' || pacmanCollision === false ) {
             pacman.movePosition(Pacman.movement.x, Pacman.movement.y);
         }
 
         for ( let i = 0; i < entities.length; i++ ) {
             if ( checkCollision(entities[i]) === true && entities[i].type === 'coin' ) {
-                console.log('Collide!');
-                score++;
+                addScore(10);
+                entities.splice(i, 1);
+                i--;
+            } else if ( checkCollision(entities[i]) === true && entities[i].type === 'cherry' ) {
+                addScore(20);
                 entities.splice(i, 1);
                 i--;
             }
@@ -292,6 +299,11 @@ const Game = (() => {
             currentEntity.property.style.top = currentEntity.position.y;
             currentEntity.property.style.left = currentEntity.position.x;
         }
+    }
+
+    const addScore = (value) => {
+        score += value;
+        scorer.textContent = score;
     }
 
     const pushEntities = (entity) => {
