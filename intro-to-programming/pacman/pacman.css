@@ -1,30 +1,36 @@
 body {
     background-color: black;
+    margin: 0;
+}
+
+#pacman {
+    background: url('./img/pacman.gif');
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    z-index: 100;
+    width: 2em;
+    height: 2em;
 }
 
 div.row div{ 
-    width: 20px;
-    height: 20px;
-    border: 1px solid black;
+    width: 2em;
+    height: 2em;
     display: inline-block;
 }
 
 div.brick {
     background-color: blue;
+    position: absolute;
 }
 
 div.coin {
     background: url('./img/coin-knux400.gif');
     background-size: cover;
     background-position: center;
+    position: absolute;
 }
 
 div.empty {
 
-}
-
-div.pacman {
-    background: url('./img/pacman.gif');
-    background-size: cover;
-    background-position: center;
 }

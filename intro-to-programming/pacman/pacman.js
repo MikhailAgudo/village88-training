@@ -1,3 +1,80 @@
+const Entity = (x, y, classes) => {
+    const WIDTH = '20px';
+    const HEIGHT = '20px'; // should factor in collision
+    let position = {
+        x: x,
+        y: y
+    }
+    let property = document.createElement('div');
+
+    const initialize = () => {
+        property.style.width = WIDTH;
+        property.style.height = HEIGHT;
+
+        addClasses();
+    }
+
+    const addClasses = () => {
+        property.classList.add(classes.shift());
+
+        if ( classes.length > 0 ) {
+            addClasses();
+        }
+    }
+
+    const getProperty = () => {
+        return property;
+    }
+
+    const getPosition = () => {
+        return {x, y};
+    }
+
+    const setX = () => {
+
+    }
+
+    return {
+        initialize,
+        getProperty,
+        getPosition
+    }
+}
+
+const Pacman = (() => {
+    let pacman = document.getElementById('pacman');
+    let x = 10;
+    let y = 10;
+
+    const display = () => {
+        pacman.style.top = y + 'px';
+        pacman.style.left = x + 'px';
+    }
+
+    document.onkeydown = (e) => {
+        switch (e.keyCode) {
+            case 37:
+                x--;
+                break;
+            case 38:
+                y--;
+                break;
+            case 39:
+                x++;
+                break;
+            case 40:
+                y++;
+                break;
+        }
+
+        display();
+        console.log(e.keyCode);
+    }
+    return {
+        display
+    }
+})();
+
 const Level = (() => {
     let world;
 
@@ -68,5 +145,10 @@ const Level = (() => {
     }
 })();
 
+const Game = (() => {
+
+})();
+
+Pacman.display();
 Level.initialize(9, 10);
 console.log(Level.displayWorld());
