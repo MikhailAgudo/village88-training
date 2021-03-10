@@ -60,7 +60,7 @@ const Pacman = (() => {
 
     const controlsGame = () => {
         document.onkeydown = (e) => {
-            switch (e.keyCode) {
+            switch ( e.keyCode ) {
                 case 37:
                     movement.x = -SPEED;
                     movement.y = 0;
@@ -201,7 +201,7 @@ const Level = (() => {
     }
 
     const displayBlock = (type) => {
-        switch(type) {
+        switch ( type ) {
             case 0:
                 return '<div class="empty"></div>';
             case 1:
