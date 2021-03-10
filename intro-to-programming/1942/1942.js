@@ -300,13 +300,13 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
     }
 
     const checkOutOfBounds = () => {
-        if ( position.x  > Engine.getWidth() ) {
+        if ( position.x + SIZE.width > Engine.getWidth() ) {
             return true;
         } else if ( position.x < 0 ) {
             return true;
         }
 
-        if ( position.y > Engine.getHeight() ) {
+        if ( position.y + SIZE.height > Engine.getHeight() ) {
             return true;
         } else if ( position.y < 0 ) {
             return true;
@@ -319,16 +319,16 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
         property.remove();
     }
 
-    const adjustOverflow = () => { // take into account size
+    const adjustOverflow = () => { // Eventually optimize by merging with checkOutOfBounds()
         if ( checkPlayer() === true ) {
-            if ( position.x  > Engine.getWidth() ) {
-                position.x = Engine.getWidth();
+            if ( position.x + SIZE.width > Engine.getWidth() ) {
+                position.x = Engine.getWidth() - SIZE.width;
             } else if ( position.x < 0 ) {
                 position.x = 0;
             }
     
-            if ( position.y > Engine.getHeight() ) {
-                position.y = Engine.getHeight();
+            if ( position.y + SIZE.height > Engine.getHeight() ) {
+                position.y = Engine.getHeight() - SIZE.height;
             } else if ( position.y < 0 ) {
                 position.y = 0;
             }
