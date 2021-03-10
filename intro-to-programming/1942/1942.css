@@ -1,0 +1,15 @@
+body {
+    background-color: black;
+    margin: 0;
+}
+
+.entity {
+    position: absolute;
+}
+
+.player {
+    background: url('1942.gif');
+    background-position: -85px -180px;
+    width: 28px;
+    height: 28px;
+}

@@ -1,5 +1,6 @@
 const Game = (() => {
-    const startGame = () => {
+    const start = () => {
+        Engine.initialize();
         setInterval(loop, 33);
     }
 
@@ -9,26 +10,54 @@ const Game = (() => {
     }
 
     return {
-        startGame
+        start
     }
 })();
 
 const Engine = (() => {
+    let ticks = 0;
     let pause = false;
     let entities = [];
     let player;
+    let view = 0;
+    let gameOver = false;
     let screen;
+    let height = 600;
+    let width = 800;
+    let level;
 
     const initialize = () => {
         screen = document.getElementById('screen');
+        player = Content.player();
+        addEntity(player);
+        switchControls(1);
+    }
+
+    const test = () => {
+
     }
 
     const update = () => {
+        ticks++;
 
-    }
+        for ( let i = 0; i < entities.length; i++ ) {
+            if ( entities[i].checkDeath === true ) {
+                if ( player === entities[i] ) {
+                    gameOver = true;
+                    break;
+                } else {
+                    removeEntity(i);
+                }
+            }
 
-    const checkHits = (index) => {
+            if ( checkCollision(entities[i]) === true ) {
+                entities[i].damage(1);
+            }
+        }
 
+        if ( gameOver === true ) {
+            // Lose
+        }
     }
 
     const display = () => {
@@ -38,12 +67,18 @@ const Engine = (() => {
     }
 
     const draw = (entity) => {
-        entity.property.style.top = entity.position.y;
-        entity.property.style.left = entity.position.x;
+        let property = entity.getProperty();
+        property.style.top = entity.position.y + 'px'; // Don't forget 'px'
+        property.style.left = entity.position.x + 'px';
+    }
+
+    const addEntity = (entity) => {
+        entities.push(entity);
+        screen.appendChild(entity.getProperty());
     }
 
     const removeEntity = (index) => {
-        entities[index].property.innerHTML = '';
+        entities[index].getProperty().innerHTML = '';
         entities.splice(index, 1);
     }
 
@@ -52,27 +87,8 @@ const Engine = (() => {
             case 0:
                 break;
             case 1:
-                gameControls();
+                Controls.game();
                 break;
-        }
-    }
-
-    const gameControls = () => {
-        document.onkeydown = (e) => {
-            switch ( e.keyCode ) {
-                case 37:
-                    player.move(-player.SPEED, 0);
-                    break;
-                case 38:
-                    player.move(0, -player.SPEED);
-                    break;
-                case 39:
-                    player.move(player.SPEED, 0);
-                    break;
-                case 40:
-                    player.move(0, player.SPEED);
-                    break;
-            }
         }
     }
 
@@ -101,16 +117,67 @@ const Engine = (() => {
 
         return false;
     }
+
+    const loadLevel = () => {
+        // An array containing content appearing, and the time/tick that they appear
+    }
+
+    const getPlayer = () => {
+        return player;
+    }
+
     return {
         initialize,
         update,
-        display
+        display,
+        getPlayer,
+        height,
+        width
     }
 })();
 
 const Content = (() => {
-    return {
+    const player = () => {
+        let height = parseInt(Engine.height * 0.9);
+        let width = parseInt(Engine.width / 2);
+        let classes = ['entity', 'player'];
 
+        let newPlayer = Entity(height, width, 28, 28, 3, 5, 'player', classes);
+
+        newPlayer.initialize();
+
+        return newPlayer;
+    }
+    return {
+        player
+    }
+})();
+
+const Controls = (() => {
+    const game = () => {
+        document.onkeydown = (e) => {
+            let player = Engine.getPlayer();
+
+            switch ( e.keyCode ) {
+                case 37:
+                    player.move(-player.SPEED, 0);
+                    console.log(player.position.x);
+                    break;
+                case 38:
+                    player.move(0, -player.SPEED);
+                    break;
+                case 39:
+                    player.move(player.SPEED, 0);
+                    break;
+                case 40:
+                    player.move(0, player.SPEED);
+                    break;
+            }
+        }
+    }
+
+    return {
+        game
     }
 })();
 
@@ -122,7 +189,7 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
     }
     const NAME = name;
     let property = document.createElement('div');
-    let hits = [0, hits]
+    let HP = [0, hits]
     let position = {
         x: x,
         y: y
@@ -148,23 +215,47 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
         position.y += y;
     }
 
+    const repair = (value) => {
+        HP[0] -= value;
+
+        if ( HP[0] < 0 ) {
+            HP[0] = 0;
+        }
+    }
+
+    const damage = (value) => {
+        HP[0] += value;
+
+        if ( HP[0] > HP[1] ) {
+            HP[0] = HP[1];
+        }
+    }
+
     const checkDeath = () => {
-        if ( hits[0] === hits[1] ) {
+        if ( HP[0] === HP[1] ) {
             return true;
         } else {
             return false;
         }
     }
 
+    const getProperty = () => {
+        return property;
+    }
+
     return {
         initialize,
         move,
+        repair,
+        damage,
         checkDeath,
+        getProperty,
         SPEED,
         SIZE,
         NAME,
-        property,
-        hits,
+        HP,
         position
     }
 }
+
+Game.start();
