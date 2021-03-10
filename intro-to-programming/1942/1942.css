@@ -12,6 +12,17 @@ body {
     background-position: 0% 100%;
 }
 
+#score {
+    top: 700px;
+    left: 50px;
+    border: 1px solid white;
+    color: white;
+    padding: 5px;
+    width: 50px;
+    height: 30px;
+    text-align: center;
+}
+
 .entity {
     position: absolute;
 }
@@ -44,4 +55,39 @@ body {
     background-position: -185px -400px;
     width: 18px;
     height: 18px;
+}
+
+.explosion1 {
+    background: url('./1942.gif');
+    background-position: -30px -30px;
+    width: 28px;
+    height: 28px;
+}
+
+.explosion2 {
+    background: url('./1942.gif');
+    background-position: -60px -30px;
+    width: 28px;
+    height: 28px;
+}
+
+.explosion3 {
+    background: url('./1942.gif');
+    background-position: -85px -30px;
+    width: 28px;
+    height: 28px;
+}
+
+.explosion4 {
+    background: url('./1942.gif');
+    background-position: -110px -30px;
+    width: 28px;
+    height: 28px;
+}
+
+.explosion5 {
+    background: url('./1942.gif');
+    background-position: -145px -30px;
+    width: 28px;
+    height: 28px;
 }

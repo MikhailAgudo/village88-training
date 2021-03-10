@@ -27,8 +27,8 @@ const Engine = (() => {
     let width = 800;
     let level;
     let immunities = [
-        ['player', 'playerFire'],
-        ['enemy1', 'enemy2']
+        ['player', 'playerFire', 'explosion'],
+        ['enemy1', 'enemy2', 'explosion']
     ];
 
     const initialize = () => {
@@ -55,11 +55,16 @@ const Engine = (() => {
             if ( entities[i].checkDeath() === true ) {
                 if ( player === entities[i] ) {
                     gameOver = true;
+                    Content.explodeSound();
 
                     // break; is for a game over screen
                     // should probably be continue;
                     //break;
                 } 
+
+                if ( entities[i].NAME === 'enemy1' || entities[i].NAME === 'enemy2' ) {
+                    Content.explodeSound();
+                }
 
                 removeEntity(i);
                 i--;
@@ -106,6 +111,10 @@ const Engine = (() => {
     }
 
     const removeEntity = (index) => {
+        if ( entities[index].NAME === 'enemy1' || entities[index].NAME === 'enemy2' ) {
+            let enemy = entities[index];
+            addEntity(Content.explosion(enemy.getX(), enemy.getY()));
+        }
         entities[index].die();
         entities.splice(index, 1);
     }
@@ -228,6 +237,23 @@ const AI = (() => {
             case 'playerFire':
                 entity.move(0, -entity.SPEED);
                 break;
+            case 'explosion':
+                if ( entity.getProperty().classList.contains('explosion1') ) {
+                    entity.getProperty().classList.remove('explosion1');
+                    entity.getProperty().classList.add('explosion2');
+                } else if ( entity.getProperty().classList.contains('explosion2') ) {
+                    entity.getProperty().classList.remove('explosion2');
+                    entity.getProperty().classList.add('explosion3');
+                } else if ( entity.getProperty().classList.contains('explosion3') ) {
+                    entity.getProperty().classList.remove('explosion3');
+                    entity.getProperty().classList.add('explosion4');
+                } else if ( entity.getProperty().classList.contains('explosion4') ) {
+                    entity.getProperty().classList.remove('explosion4');
+                    entity.getProperty().classList.add('explosion5');
+                } else if ( entity.getProperty().classList.contains('explosion5') ) {
+                    entity.damage(1);
+                }
+                break;
         }
     }
 
@@ -311,13 +337,29 @@ const Content = (() => {
         return bullet;
     }
 
+    const explosion = (x, y) => {
+        let classes = ['entity', 'explosion1'];
+
+        let explode = Entity(x, y, 28, 28, 1, 0, 'explosion', classes);
+
+        explode.initialize();
+
+        return explode;
+    }
+
+    const explodeSound = () => {
+        new Audio('./explode.ogg').play();
+    }
+
     return {
         initializeLevels,
         player,
         enemy1,
         enemy2,
         playerFire,
-        getLevels
+        explosion,
+        getLevels,
+        explodeSound
     }
 })();
 
