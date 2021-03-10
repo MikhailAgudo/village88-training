@@ -16,6 +16,7 @@ const Game = (() => {
 
 const Engine = (() => {
     let ticks = 0;
+    let scroll = 0;
     let pause = false;
     let entities = [];
     let player;
@@ -52,6 +53,7 @@ const Engine = (() => {
                     gameOver = true;
 
                     // break; is for a game over screen
+                    // should probably be
                     //break;
                 } 
 
@@ -80,6 +82,10 @@ const Engine = (() => {
         for ( let i = 0; i < entities.length; i++ ) { 
             draw(entities[i]);
         }
+
+        screen.style.backgroundPosition = '0px ' + scroll + 'px';
+
+        scroll++;
     }
 
     const draw = (entity) => {
@@ -147,6 +153,7 @@ const Engine = (() => {
                     console.log('Next wave!');
                     let nextWave = level.nextWave();
                     addEntity(nextWave.entity);
+                    playLevel();
                 }
             }
         }
@@ -202,6 +209,12 @@ const Content = (() => {
         let newLevel = Level('Harbor');
 
         newLevel.addWave(Engine.getPlayer(), 0);
+        newLevel.addWave(enemy1(500, 0), 20);
+        newLevel.addWave(enemy1(550, 0), 20);
+        newLevel.addWave(enemy1(450, 0), 20);
+        newLevel.addWave(enemy1(200, 0), 50);
+        newLevel.addWave(enemy1(230, 0), 50);
+        newLevel.addWave(enemy1(260, 0), 50);
         newLevel.addWave(enemy1(40, 0), 100);
         newLevel.addWave(enemy1(40, 0), 120);
 
@@ -227,13 +240,17 @@ const Content = (() => {
     const enemy1 = (x, y) => {
         let classes = ['entity', 'enemy1'];
 
-        let newEnemy = Entity(x, y, 28, 28, 1, 3, 'enemy1', classes);
+        let newEnemy = Entity(x, y, 28, 28, 2, 3, 'enemy1', classes);
 
         newEnemy.initialize();
 
         console.log(newEnemy);
 
         return newEnemy;
+    }
+
+    const playerFire = (x, y) => {
+
     }
 
     return {
@@ -262,7 +279,11 @@ const Controls = (() => {
                 case 40:
                     player.move(0, player.SPEED);
                     break;
+                case 90:
+                    break;
             }
+
+            console.log(e.keyCode);
         }
     }
 

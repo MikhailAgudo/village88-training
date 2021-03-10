@@ -7,6 +7,9 @@ body {
     width: 800px;
     height: 600px;
     border: 1px solid gray;
+    background: url('./sea.png');
+    background-repeat: repeat;
+    background-position: 0% 100%;
 }
 
 .entity {
@@ -26,4 +29,11 @@ body {
     transform: rotate(180deg);
     width: 28px;
     height: 28px;
+}
+
+.player-fire { 
+    background: url('./1942.gif');
+    background-position: -185px -400px;
+    width: 18px;
+    height: 18px;
 }
