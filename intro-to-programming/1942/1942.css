@@ -6,6 +6,7 @@ body {
 #screen {
     width: 800px;
     height: 600px;
+    border: 1px solid gray;
 }
 
 .entity {
@@ -14,7 +15,15 @@ body {
 
 .player {
     background: url('1942.gif');
+    background-position: -30px -10px;
+    width: 28px;
+    height: 28px;
+}
+
+.enemy1 {
+    background: url('1942.gif');
     background-position: -85px -180px;
+    transform: rotate(180deg);
     width: 28px;
     height: 28px;
 }

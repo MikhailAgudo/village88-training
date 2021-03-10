@@ -30,6 +30,7 @@ const Engine = (() => {
         screen = document.getElementById('screen');
         player = Content.player();
         addEntity(player);
+        addEntity(Content.enemy1(500, 0));
         switchControls(1);
     }
 
@@ -41,18 +42,27 @@ const Engine = (() => {
         ticks++;
 
         for ( let i = 0; i < entities.length; i++ ) {
-            if ( entities[i].checkDeath === true ) {
+            if ( entities[i].checkDeath() === true ) {
                 if ( player === entities[i] ) {
                     gameOver = true;
                     break;
                 } else {
                     removeEntity(i);
+                    i--;
                 }
             }
 
+            if ( entities[i].checkOutOfBounds() === true ) { // Remove AI entities out of bounds
+                removeEntity(i);
+                i--;
+            }
+
             if ( checkCollision(entities[i]) === true ) {
+                console.log('Damage Report!');
                 entities[i].damage(1);
             }
+
+            AI.determine(entities[i]);
         }
 
         if ( gameOver === true ) {
@@ -78,7 +88,7 @@ const Engine = (() => {
     }
 
     const removeEntity = (index) => {
-        entities[index].getProperty().innerHTML = '';
+        entities[index].die();
         entities.splice(index, 1);
     }
 
@@ -144,20 +154,52 @@ const Engine = (() => {
     }
 })();
 
+const AI = (() => {
+    const determine = (entity) => {
+        switch ( entity.NAME ) {
+            case 'player':
+                break;
+            case 'enemy1':
+                entity.move(0, entity.SPEED);
+                break;
+        }
+    }
+
+    return {
+        determine
+    }
+})();
+
 const Content = (() => {
+    let levels = [];
+
     const player = () => {
         let height = parseInt(Engine.getHeight() * 0.9);
         let width = parseInt(Engine.getWidth() / 2);
         let classes = ['entity', 'player'];
 
-        let newPlayer = Entity(height, width, 28, 28, 3, 5, 'player', classes);
+        let newPlayer = Entity(height, width, 28, 28, 3, 10, 'player', classes);
 
         newPlayer.initialize();
 
         return newPlayer;
     }
+
+    const enemy1 = (x, y) => {
+        let classes = ['entity', 'enemy1'];
+
+        let newEnemy = Entity(x, y, 28, 28, 1, 3, 'enemy1', classes);
+
+        newEnemy.initialize();
+
+        console.log(newEnemy);
+
+        return newEnemy;
+    }
+
     return {
-        player
+        player,
+        enemy1
     }
 })();
 
@@ -169,7 +211,6 @@ const Controls = (() => {
             switch ( e.keyCode ) {
                 case 37:
                     player.move(-player.SPEED, 0);
-                    console.log(player.getX());
                     break;
                 case 38:
                     player.move(0, -player.SPEED);
@@ -243,23 +284,54 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
 
     const checkDeath = () => {
         if ( HP[0] === HP[1] ) {
+            console.log('Dead');
             return true;
         } else {
             return false;
         }
     }
 
-    const adjustOverflow = () => {
+    const checkPlayer = () => {
+        if ( NAME === 'player' ) {
+            return true;
+        } else { 
+            return false;
+        }
+    }
+
+    const checkOutOfBounds = () => {
         if ( position.x  > Engine.getWidth() ) {
-            position.x = Engine.getWidth();
+            return true;
         } else if ( position.x < 0 ) {
-            position.x = 0;
+            return true;
         }
 
         if ( position.y > Engine.getHeight() ) {
-            position.y = Engine.getHeight();
+            return true;
         } else if ( position.y < 0 ) {
-            position.y = 0;
+            return true;
+        }
+
+        return false;
+    }
+
+    const die = () => {
+        property.remove();
+    }
+
+    const adjustOverflow = () => { // take into account size
+        if ( checkPlayer() === true ) {
+            if ( position.x  > Engine.getWidth() ) {
+                position.x = Engine.getWidth();
+            } else if ( position.x < 0 ) {
+                position.x = 0;
+            }
+    
+            if ( position.y > Engine.getHeight() ) {
+                position.y = Engine.getHeight();
+            } else if ( position.y < 0 ) {
+                position.y = 0;
+            }
         }
     }
 
@@ -285,6 +357,8 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
         repair,
         damage,
         checkDeath,
+        checkOutOfBounds,
+        die,
         getProperty,
         getHP,
         getX,
