@@ -30,6 +30,7 @@ const Engine = (() => {
         ['player', 'playerFire', 'explosion'],
         ['enemy1', 'enemy2', 'explosion']
     ];
+    let scoreboard = document.getElementById('score');
 
     const initialize = () => {
         screen = document.getElementById('screen');
@@ -62,8 +63,12 @@ const Engine = (() => {
                     //break;
                 } 
 
-                if ( entities[i].NAME === 'enemy1' || entities[i].NAME === 'enemy2' ) {
+                if ( entities[i].NAME === 'enemy1' ) {
                     Content.explodeSound();
+                    addScore(10);
+                } else if ( entities[i].NAME === 'enemy2' ) {
+                    Content.explodeSound();
+                    addScore(30);
                 }
 
                 removeEntity(i);
@@ -198,6 +203,12 @@ const Engine = (() => {
                 }
             }
         }
+    }
+
+    const addScore = (value) => {
+        let score = parseInt(scoreboard.textContent);
+        score += value;
+        scoreboard.textContent = score;
     }
 
     const getPlayer = () => {
@@ -385,8 +396,6 @@ const Controls = (() => {
                     Engine.addEntity(Content.playerFire());
                     break;
             }
-
-            console.log(e.keyCode);
         }
     }
 
