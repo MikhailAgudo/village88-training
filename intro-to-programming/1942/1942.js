@@ -29,8 +29,10 @@ const Engine = (() => {
     const initialize = () => {
         screen = document.getElementById('screen');
         player = Content.player();
-        addEntity(player);
-        addEntity(Content.enemy1(500, 0));
+        Content.initializeLevels();
+        loadLevel(0);
+        //addEntity(player);
+        //addEntity(Content.enemy1(500, 0));
         switchControls(1);
     }
 
@@ -39,11 +41,11 @@ const Engine = (() => {
     }
 
     const update = () => {
-        ticks++;
-
         for ( let i = 0; i < entities.length; i++ ) {
             if ( entities[i].checkDeath() === true ) {
                 if ( player === entities[i] ) {
+                    removeEntity(i);
+                    i--;
                     gameOver = true;
                     break;
                 } else {
@@ -68,6 +70,10 @@ const Engine = (() => {
         if ( gameOver === true ) {
             // Lose
         }
+
+        playLevel();
+
+        ticks++;
     }
 
     const display = () => {
@@ -128,8 +134,22 @@ const Engine = (() => {
         return false;
     }
 
-    const loadLevel = () => {
+    const loadLevel = (index) => {
         // An array containing content appearing, and the time/tick that they appear
+        level = Content.getLevels()[index];
+    }
+
+    const playLevel = () => {
+        if ( level !== undefined ) {
+            //let nextWave = level.nextWave();
+            if ( level.getWaves().length > 0 ) {
+                if ( ticks >= level.waveTick() ) {
+                    console.log('Next wave!');
+                    let nextWave = level.nextWave();
+                    addEntity(nextWave.entity);
+                }
+            }
+        }
     }
 
     const getPlayer = () => {
@@ -173,6 +193,25 @@ const AI = (() => {
 const Content = (() => {
     let levels = [];
 
+
+    const initializeLevels = () => {
+        levels.push(harbor());
+    }
+
+    const harbor = () => {
+        let newLevel = Level('Harbor');
+
+        newLevel.addWave(Engine.getPlayer(), 0);
+        newLevel.addWave(enemy1(40, 0), 100);
+        newLevel.addWave(enemy1(40, 0), 120);
+
+        return newLevel;
+    }
+
+    const getLevels = () => {
+        return levels;
+    }
+
     const player = () => {
         let height = parseInt(Engine.getHeight() * 0.9);
         let width = parseInt(Engine.getWidth() / 2);
@@ -198,8 +237,10 @@ const Content = (() => {
     }
 
     return {
+        initializeLevels,
         player,
-        enemy1
+        enemy1,
+        getLevels
     }
 })();
 
@@ -285,6 +326,9 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
     const checkDeath = () => {
         if ( HP[0] === HP[1] ) {
             console.log('Dead');
+            if ( NAME === 'player' ){
+                console.log('Game Over');
+            }
             return true;
         } else {
             return false;
@@ -366,6 +410,43 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
         SPEED,
         SIZE,
         NAME,
+    }
+}
+
+const Level = (name) => {
+    const NAME = name;
+    let waves = [];
+
+    const addWave = (entity, tick) => {
+        let newWave = Wave(entity, tick);
+
+        waves.push(newWave);
+    }
+
+    const waveTick = () => {
+        return waves[0].tick;
+    }
+
+    const nextWave = () => {
+        return waves.shift();
+    }
+
+    const getWaves = () => {
+        return waves;
+    }
+
+    return {
+        addWave,
+        waveTick,
+        nextWave,
+        getWaves
+    }
+}
+
+const Wave = (entity, tick) => {
+    return {
+        entity,
+        tick
     }
 }
 
