@@ -42,26 +42,26 @@ const Engine = (() => {
 
     const update = () => {
         for ( let i = 0; i < entities.length; i++ ) {
+            if ( checkCollision(entities[i]) === true ) {
+                console.log('Damage Report!');
+                entities[i].damage(1);
+            }
+
             if ( entities[i].checkDeath() === true ) {
                 if ( player === entities[i] ) {
-                    removeEntity(i);
-                    i--;
                     gameOver = true;
-                    break;
-                } else {
-                    removeEntity(i);
-                    i--;
-                }
+
+                    // break; is for a game over screen
+                    //break;
+                } 
+
+                removeEntity(i);
+                i--;
             }
 
             if ( entities[i].checkOutOfBounds() === true ) { // Remove AI entities out of bounds
                 removeEntity(i);
                 i--;
-            }
-
-            if ( checkCollision(entities[i]) === true ) {
-                console.log('Damage Report!');
-                entities[i].damage(1);
             }
 
             AI.determine(entities[i]);
