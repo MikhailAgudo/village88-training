@@ -3,6 +3,11 @@ body {
     margin: 0;
 }
 
+#screen {
+    width: 800px;
+    height: 600px;
+}
+
 .entity {
     position: absolute;
 }

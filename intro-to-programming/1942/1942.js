@@ -68,8 +68,8 @@ const Engine = (() => {
 
     const draw = (entity) => {
         let property = entity.getProperty();
-        property.style.top = entity.position.y + 'px'; // Don't forget 'px'
-        property.style.left = entity.position.x + 'px';
+        property.style.top = entity.getY() + 'px'; // Don't forget 'px'
+        property.style.left = entity.getX() + 'px';
     }
 
     const addEntity = (entity) => {
@@ -96,13 +96,13 @@ const Engine = (() => {
         for ( let i = 0; i < entities.length; i++ ) {
             if ( entity !== entities[i] ) {
                 // The variables are for readability
-                let currentEntityPosX = entity.position.x;
-                let currentEntityPosY = entity.position.y;
+                let currentEntityPosX = entity.getX();
+                let currentEntityPosY = entity.getY();
                 let currentEntityWidth = entity.SIZE.width;
                 let currentEntityHeight = entity.SIZE.height;
 
-                let targetEntityPosX = entities[i].position.x;
-                let targetEntityPosY = entities[i].position.y;
+                let targetEntityPosX = entities[i].getX();
+                let targetEntityPosY = entities[i].getY();
                 let targetEntityWidth = entities[i].SIZE.width;
                 let targetEntityHeight = entities[i].SIZE.height;
 
@@ -126,20 +126,28 @@ const Engine = (() => {
         return player;
     }
 
+    const getHeight = () => {
+        return height;
+    }
+
+    const getWidth = () => {
+        return width;
+    }
+
     return {
         initialize,
         update,
         display,
         getPlayer,
-        height,
-        width
+        getHeight,
+        getWidth
     }
 })();
 
 const Content = (() => {
     const player = () => {
-        let height = parseInt(Engine.height * 0.9);
-        let width = parseInt(Engine.width / 2);
+        let height = parseInt(Engine.getHeight() * 0.9);
+        let width = parseInt(Engine.getWidth() / 2);
         let classes = ['entity', 'player'];
 
         let newPlayer = Entity(height, width, 28, 28, 3, 5, 'player', classes);
@@ -161,7 +169,7 @@ const Controls = (() => {
             switch ( e.keyCode ) {
                 case 37:
                     player.move(-player.SPEED, 0);
-                    console.log(player.position.x);
+                    console.log(player.getX());
                     break;
                 case 38:
                     player.move(0, -player.SPEED);
@@ -213,6 +221,8 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
     const move = (x, y) => {
         position.x += x;
         position.y += y;
+
+        adjustOverflow();
     }
 
     const repair = (value) => {
@@ -239,8 +249,34 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
         }
     }
 
+    const adjustOverflow = () => {
+        if ( position.x  > Engine.getWidth() ) {
+            position.x = Engine.getWidth();
+        } else if ( position.x < 0 ) {
+            position.x = 0;
+        }
+
+        if ( position.y > Engine.getHeight() ) {
+            position.y = Engine.getHeight();
+        } else if ( position.y < 0 ) {
+            position.y = 0;
+        }
+    }
+
     const getProperty = () => {
         return property;
+    }
+
+    const getX = () => {
+        return position.x;
+    }
+
+    const getY = () => {
+        return position.y;
+    }
+
+    const getHP = () => {
+        return HP;
     }
 
     return {
@@ -250,11 +286,12 @@ const Entity = (x, y, width, height, hits, speed, name, classes) => {
         damage,
         checkDeath,
         getProperty,
+        getHP,
+        getX,
+        getY,
         SPEED,
         SIZE,
         NAME,
-        HP,
-        position
     }
 }
 
