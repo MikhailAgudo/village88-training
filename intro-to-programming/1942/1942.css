@@ -31,6 +31,14 @@ body {
     height: 28px;
 }
 
+.enemy2 {
+    background: url('./1942.gif');
+    background-position: -90px -120px;
+    transform: rotate(180deg);
+    width: 35px;
+    height: 35px;
+}
+
 .player-fire { 
     background: url('./1942.gif');
     background-position: -185px -400px;

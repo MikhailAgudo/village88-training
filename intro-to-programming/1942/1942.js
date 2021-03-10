@@ -28,7 +28,7 @@ const Engine = (() => {
     let level;
     let immunities = [
         ['player', 'playerFire'],
-        ['enemy1']
+        ['enemy1', 'enemy2']
     ];
 
     const initialize = () => {
@@ -63,11 +63,13 @@ const Engine = (() => {
 
                 removeEntity(i);
                 i--;
+                continue;
             }
 
             if ( entities[i].checkOutOfBounds() === true ) { // Remove AI entities out of bounds
                 removeEntity(i);
                 i--;
+                continue;
             }
 
             AI.determine(entities[i]);
@@ -153,17 +155,21 @@ const Engine = (() => {
             let count = 0;
 
             for ( let j = 0; j < immunities[i].length; j++ ) {
-                if ( entity.NAME === immunities[i][j] || target.NAME === immunities[i][j] ) {
+                if ( entity.NAME === immunities[i][j] ) {
+                    count++;
+                }
+
+                if ( target.NAME === immunities[i][j] ) {
                     count++;
                 }
             }
 
             if ( count >= 2 ) {
                 return true;
-            } else {
-                return false;
             }
         }
+
+        return false;
     }
 
     const loadLevel = (index) => {
@@ -216,6 +222,9 @@ const AI = (() => {
             case 'enemy1':
                 entity.move(0, entity.SPEED);
                 break;
+            case 'enemy2':
+                entity.move(0, entity.SPEED);
+                break;
             case 'playerFire':
                 entity.move(0, -entity.SPEED);
                 break;
@@ -245,6 +254,8 @@ const Content = (() => {
         newLevel.addWave(enemy1(200, 0), 50);
         newLevel.addWave(enemy1(230, 0), 50);
         newLevel.addWave(enemy1(260, 0), 50);
+        newLevel.addWave(enemy2(200, 0), 80);
+        newLevel.addWave(enemy2(700, 0), 80);
         newLevel.addWave(enemy1(40, 0), 100);
         newLevel.addWave(enemy1(40, 0), 120);
 
@@ -274,7 +285,15 @@ const Content = (() => {
 
         newEnemy.initialize();
 
-        console.log(newEnemy);
+        return newEnemy;
+    }
+
+    const enemy2 = (x, y) => {
+        let classes = ['entity', 'enemy2'];
+
+        let newEnemy = Entity(x, y, 35, 35, 3, 5, 'enemy2', classes);
+
+        newEnemy.initialize();
 
         return newEnemy;
     }
@@ -296,6 +315,7 @@ const Content = (() => {
         initializeLevels,
         player,
         enemy1,
+        enemy2,
         playerFire,
         getLevels
     }
