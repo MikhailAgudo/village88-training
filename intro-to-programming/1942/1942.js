@@ -26,6 +26,10 @@ const Engine = (() => {
     let height = 600;
     let width = 800;
     let level;
+    let immunities = [
+        ['player', 'playerFire'],
+        ['enemy1']
+    ];
 
     const initialize = () => {
         screen = document.getElementById('screen');
@@ -53,7 +57,7 @@ const Engine = (() => {
                     gameOver = true;
 
                     // break; is for a game over screen
-                    // should probably be
+                    // should probably be continue;
                     //break;
                 } 
 
@@ -118,6 +122,10 @@ const Engine = (() => {
         for ( let i = 0; i < entities.length; i++ ) {
             if ( entity !== entities[i] ) {
                 // The variables are for readability
+                if ( checkImmunity(entity, entities[i]) === true ) {
+                    continue;
+                }
+                
                 let currentEntityPosX = entity.getX();
                 let currentEntityPosY = entity.getY();
                 let currentEntityWidth = entity.SIZE.width;
@@ -138,6 +146,24 @@ const Engine = (() => {
         }
 
         return false;
+    }
+
+    const checkImmunity = (entity, target) => {
+        for ( let i = 0; i < immunities.length; i++ ) {
+            let count = 0;
+
+            for ( let j = 0; j < immunities[i].length; j++ ) {
+                if ( entity.NAME === immunities[i][j] || target.NAME === immunities[i][j] ) {
+                    count++;
+                }
+            }
+
+            if ( count >= 2 ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     const loadLevel = (index) => {
@@ -175,6 +201,7 @@ const Engine = (() => {
         initialize,
         update,
         display,
+        addEntity,
         getPlayer,
         getHeight,
         getWidth
@@ -188,6 +215,9 @@ const AI = (() => {
                 break;
             case 'enemy1':
                 entity.move(0, entity.SPEED);
+                break;
+            case 'playerFire':
+                entity.move(0, -entity.SPEED);
                 break;
         }
     }
@@ -230,7 +260,7 @@ const Content = (() => {
         let width = parseInt(Engine.getWidth() / 2);
         let classes = ['entity', 'player'];
 
-        let newPlayer = Entity(height, width, 28, 28, 3, 10, 'player', classes);
+        let newPlayer = Entity(height, width, 28, 28, 3, 20, 'player', classes);
 
         newPlayer.initialize();
 
@@ -249,14 +279,24 @@ const Content = (() => {
         return newEnemy;
     }
 
-    const playerFire = (x, y) => {
+    const playerFire = () => {
+        let classes = ['entity', 'player-fire'];
 
+        let x = Engine.getPlayer().getX() + 9;
+        let y = Engine.getPlayer().getY();
+
+        let bullet = Entity(x, y, 18, 18, 1, 20, 'playerFire', classes);
+
+        bullet.initialize();
+
+        return bullet;
     }
 
     return {
         initializeLevels,
         player,
         enemy1,
+        playerFire,
         getLevels
     }
 })();
@@ -280,6 +320,7 @@ const Controls = (() => {
                     player.move(0, player.SPEED);
                     break;
                 case 90:
+                    Engine.addEntity(Content.playerFire());
                     break;
             }
 
