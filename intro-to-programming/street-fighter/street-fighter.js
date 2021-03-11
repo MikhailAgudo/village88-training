@@ -299,14 +299,11 @@ const Engine = (() => {
             }
 
             AI.determine(entities[i]);
-            AI.spawn();
 
-            ticks++;
         }
 
-        for ( let i = 0; i < entities.length; i++ ) {
-            
-        }
+        AI.spawn();
+        ticks++;
     }
 
     const applyGravity = (entity) => {
@@ -400,8 +397,8 @@ const AI = (() => {
     }
 
     const spawn = () => {
-        if ( Engine.getTicks() % 40 === 0 ) {
-            Engine.addEntity(Content.ball((Engine.getTicks()%100) + 100));
+        if ( Engine.getTicks() % 10 === 0 ) {
+            Engine.addEntity(Content.ball((Engine.getTicks()%100) + 150));
         }
     }
 
