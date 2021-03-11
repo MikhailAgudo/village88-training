@@ -63,3 +63,7 @@ body{
 .kenRest {
     background: url('ken.png');
 }
+
+.ball {
+    background: url('ken.png') -23px -422px;
+}

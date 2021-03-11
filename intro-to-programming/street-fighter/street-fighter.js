@@ -46,7 +46,8 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
         position.x += momentum.x;
         position.y += momentum.y;
 
-        if ( checkOutOfBounds() === false ) {
+        if ( checkOutOfBounds() === true ) {
+            console.log('damage');
             damage(1);
         }
     }
@@ -81,13 +82,15 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
     }
 
     const animate = () => {
-        property.style.backgroundPositionX = Structurer.bgPos(frame * action.nextFrame);
-
-        if ( frame >= action.frames - 1 ) {
-            frame = 0;
-            switchAction(0);
-        } else {
-            frame++;
+        if ( ACTIONS.length > 0 ) {
+            property.style.backgroundPositionX = Structurer.bgPos(frame * action.nextFrame);
+    
+            if ( frame >= action.frames - 1 ) {
+                frame = 0;
+                switchAction(0);
+            } else {
+                frame++;
+            }
         }
     }
 
@@ -128,9 +131,21 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
             } else if ( position.y < 0 ) {
                 position.y = 0;
             }
-        }
+        } else {
+            if ( position.x + SIZE.width > Engine.WIDTH ) {
+                return true;
+            } else if ( position.x < 0 ) {
+                return true;
+            }
 
-        return false;
+            if ( position.y + SIZE.height > Engine.HEIGHT ) {
+                return true;
+            } else if ( position.y < 0 ) {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     const checkJump = () => {
@@ -161,8 +176,16 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
         return HP;
     }
 
-    const getAnimations = () => {
-        return animations;
+    const getActions = () => {
+        return ACTIONS;
+    }
+
+    const getAction = () => {
+        return action;
+    }
+
+    const getFrame = () => {
+        return frame;
     }
 
     return {
@@ -182,10 +205,12 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
         getProperty,
         getPosition,
         getHP,
-        getAnimations,
+        getActions,
+        getAction,
+        getFrame,
         SPEED,
         SIZE,
-        NAME
+        NAME,
     }
 }
 
@@ -239,6 +264,7 @@ const Engine = (() => {
 
     const test = () => {
         addEntity(player);
+        addEntity(Content.ball());
     }
 
     const update = () => {
@@ -246,9 +272,37 @@ const Engine = (() => {
             entities[i].move();
             entities[i].rest();
 
-            if ( entities[i].checkPlayer() === true ) {
-                applyGravity(entities[i]);
+            switch ( entities[i].checkPlayer() ) {
+                case true:
+                    applyGravity(entities[i]);
+
+                    console.log(checkCollision(entities[i]) === true && entities[i].getAction() === entities[i].getActions()[0]);
+
+                    if ( (checkCollision(entities[i]) === true && entities[i].getAction() === entities[i].getActions()[0]) || 
+                        (entities[i].getAction() !== entities[i].getActions()[0] && entities[i].getFrame < 1) ) {
+                        entities[i].damage(5);
+                    }
+                    
+                    break;
+                case false:
+                    if ( checkCollision(entities[i]) === true ) {
+                        entities[i].damage(1);
+                    }
+                    break;
             }
+            
+            if ( entities[i].checkDeath() === true ) {
+                console.log('death');
+                removeEntity(i);
+                i--;
+                continue;
+            }
+
+            AI.determine(entities[i]);
+        }
+
+        for ( let i = 0; i < entities.length; i++ ) {
+            
         }
     }
 
@@ -281,6 +335,37 @@ const Engine = (() => {
         screen.appendChild(entity.getProperty());
     }
 
+    const removeEntity = (index) => {
+        entities[index].die();
+        entities.splice(index, 1);
+    }
+
+    const checkCollision = (entity) => {
+        for ( let i = 0; i < entities.length; i++ ) {
+            if ( entity !== entities[i] ) {
+                let currentEntityPosX = entity.getPosition().x;
+                let currentEntityPosY = entity.getPosition().y;
+                let currentEntityWidth = entity.SIZE.width;
+                let currentEntityHeight = entity.SIZE.height;
+
+                let targetEntityPosX = entities[i].getPosition().x;
+                let targetEntityPosY = entities[i].getPosition().y;
+                let targetEntityWidth = entities[i].SIZE.width;
+                let targetEntityHeight = entities[i].SIZE.height;
+
+                if ( currentEntityPosX < targetEntityPosX + targetEntityWidth && 
+                    currentEntityPosX + currentEntityWidth > targetEntityPosX && 
+                    currentEntityPosY < targetEntityPosY + targetEntityHeight && 
+                    currentEntityPosY + currentEntityHeight > targetEntityPosY ) {
+                    console.log('Collide');
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     const getPlayer = () => {
         return player;
     }
@@ -292,6 +377,19 @@ const Engine = (() => {
         getPlayer,
         HEIGHT,
         WIDTH
+    }
+})();
+
+const AI = (() => {
+    const determine = (entity) => {
+        switch ( entity.NAME ) {
+            case 'ball':
+                entity.accelerate(-5, 0);
+                break;
+        }
+    }
+    return {
+        determine
     }
 })();
 
@@ -343,6 +441,14 @@ const Content = (() => {
         return newPlayer;
     }
 
+    const ball = () => {
+        let newBall = Entity(700, 150, 20, 20, 2, 40, 'ball', ['entity', 'ball'], []);
+
+        newBall.initialize();
+
+        return newBall;
+    }
+
     const playerRestingAnimation = () => {
         let newAnimation = Action('ken', 4, 0, 80, 70);
 
@@ -362,7 +468,8 @@ const Content = (() => {
     }
 
     return {
-        player
+        player,
+        ball
     }
 })();
 
