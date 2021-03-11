@@ -1,6 +1,8 @@
 body{
 	background-color:black;
+    margin: 0;
 }
+
 #background{
 	width: 800px;
 	height:260px;
@@ -14,6 +16,7 @@ body{
 	height:80px;
 	position:absolute;
 }
+
 #character2{
 	background: url('ken.png') -70px -160px;
 	width:70px;
@@ -21,6 +24,7 @@ body{
 	position:absolute;
 	transform: scaleX(-1);
 }
+
 #healthbar1{
 	width:200px;
 	height:15px;
@@ -30,6 +34,7 @@ body{
 	top:30px;
 	left:25px;
 }
+
 #healthbar2{
 	width:200px;
 	height:15px;
@@ -38,4 +43,21 @@ body{
 	position:absolute;
 	top:30px;
 	left:325px;
+}
+
+#screen {
+    width: 800px;
+    height: 260px;
+    background-color: black;
+    border: 1px solid gray;
+}
+
+.entity {
+    position: absolute;
+}
+
+.ken {
+	background: url('ken.png') 0px -80px;
+    width: 70px;
+    height: 80px;
 }
