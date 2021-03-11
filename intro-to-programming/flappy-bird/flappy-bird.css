@@ -1,0 +1,48 @@
+body {
+    background: black;
+    margin: 0;
+}
+
+#screen {
+    width: 600px;
+    height: 800px;
+    background: lightblue;
+    overflow: hidden;
+}
+
+#score {
+    position:absolute;
+    top: 50px;
+    left: 280px;
+    z-index: 1000;
+    font-size: 80px;
+    color: white;
+}
+
+#bird {
+    background: url('./bird.png');
+    background-size: cover;
+    background-position: center;
+    height: 50px;
+    width: 50px;
+    position: absolute;
+}
+
+#top-pipe {
+    background: url('./pipe.png');
+    background-size: cover;
+    background-position: center;
+    transform: rotate(180deg);
+    height: 500px;
+    width: 125px;
+    position: absolute;
+}
+
+#bottom-pipe {
+    background: url('./pipe.png');
+    background-size: cover;
+    background-position: center;
+    height: 500px;
+    width: 125px;
+    position: absolute;
+}
