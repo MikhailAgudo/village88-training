@@ -29,7 +29,9 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
 
         addClasses();
 
-        switchAnimation(0);
+        if ( ACTIONS.length > 0 ) {
+            switchAction(0);
+        }
     }
 
     const addClasses = () => {
@@ -83,15 +85,18 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
 
         if ( frame >= action.frames - 1 ) {
             frame = 0;
+            switchAction(0);
         } else {
             frame++;
         }
     }
 
-    const switchAnimation = (index) => {
+    const switchAction = (index) => {
         action = ACTIONS[index];
         property.style.backgroundPositionX = Structurer.bgPos(action.x);
         property.style.backgroundPositionY = Structurer.bgPos(action.y);
+        
+        frame = 0;
     }
 
     const checkDeath = () => {
@@ -129,8 +134,6 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
     }
 
     const checkJump = () => {
-        console.log('Player' + (position.x + SIZE.height));
-        console.log('Screen' + (Engine.HEIGHT - 10));
         if ( (position.y + SIZE.height) > (Engine.HEIGHT - 10) ) {
             return true;
         } else {
@@ -171,6 +174,7 @@ const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
         heal,
         die,
         animate,
+        switchAction,
         checkDeath,
         checkPlayer,
         checkJump,
@@ -251,7 +255,7 @@ const Engine = (() => {
     const applyGravity = (entity) => {
         switch ( entity.NAME ) {
             case 'player':
-                entity.accelerate(0, 2);
+                entity.accelerate(0, 3);
                 break;
         }
     }
@@ -266,8 +270,8 @@ const Engine = (() => {
         let property = entity.getProperty();
         let position = entity.getPosition();
 
-        property.style.top = position.y + 'px';
-        property.style.left = position.x + 'px';
+        property.style.top = Structurer.px(position.y);
+        property.style.left = Structurer.px(position.x);
 
         entity.animate();
     }
@@ -308,6 +312,16 @@ const Controls = (() => {
                 case 39:
                     player.accelerate(5, 0);
                     break;
+                case 88:
+                    if ( player.checkRestingAction() === true ) {
+                        player.switchAction(2);
+                    }
+                    break;
+                case 90:
+                    if ( player.checkRestingAction() === true ) {
+                        player.switchAction(1);
+                    }
+                    break;
             }
         }
     }
@@ -319,7 +333,9 @@ const Controls = (() => {
 const Content = (() => {
     const player = () => {
         let newPlayer = Entity(5, 5, 70, 80, 100, 30, 'player', ['entity', 'ken'], [
-            playerRestingAnimation()
+            playerRestingAnimation(),
+            playerPunchingAnimation(),
+            playerKickingAnimation()
         ]);
 
         newPlayer.initialize();
@@ -333,7 +349,17 @@ const Content = (() => {
         return newAnimation;
     }
 
-    //const 
+    const playerPunchingAnimation = () => {
+        let newAnimation = Action('ken', 3, 0, 160, 70)
+
+        return newAnimation;
+    }
+
+    const playerKickingAnimation = () => {
+        let newAnimation = Action('ken', 5, 0, 560, 70);
+
+        return newAnimation;
+    }
 
     return {
         player
@@ -367,10 +393,15 @@ const Structurer = (() => {
         return '-' + (number) + 'px';
     }
 
+    const px = (number) => {
+        return number + 'px';
+    }
+
     return {
         abs,
         limit,
-        bgPos
+        bgPos,
+        px
     }
 })();
 
