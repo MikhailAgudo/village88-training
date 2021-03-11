@@ -57,7 +57,9 @@ body{
 }
 
 .ken {
-	background: url('ken.png') 0px -80px;
-    width: 70px;
-    height: 80px;
+	background: url('ken.png');
+}
+
+.kenRest {
+    background: url('ken.png');
 }

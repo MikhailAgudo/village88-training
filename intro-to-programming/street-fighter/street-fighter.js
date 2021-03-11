@@ -1,12 +1,13 @@
 // Ken will dodge bullets from machine guns and kill street people
 
-const Entity = (x, y, width, height, hits, speed, name, anims) => {
+const Entity = (x, y, width, height, hits, speed, name, classes, actions) => {
     const SPEED = speed;
     const SIZE = {
         width: width,
         height: height
     };
     const NAME = name;
+    let ACTIONS = actions;
     let property = document.createElement('div');
     let HP = [0, hits];
     let position = {
@@ -17,7 +18,8 @@ const Entity = (x, y, width, height, hits, speed, name, anims) => {
         x: 0,
         y: 0
     }
-    let animations = anims;
+    let action = ACTIONS[0];
+    let frame = 0;
 
     const initialize = () => {
         property.classList.add('entity');
@@ -26,12 +28,14 @@ const Entity = (x, y, width, height, hits, speed, name, anims) => {
         property.style.height = SIZE.height + 'px';
 
         addClasses();
+
+        switchAnimation(0);
     }
 
     const addClasses = () => {
-        property.classList.add(anims.shift());
+        property.classList.add(classes.shift());
 
-        if ( anims.length > 0 ) {
+        if ( classes.length > 0 ) {
             addClasses();
         }
     }
@@ -72,6 +76,22 @@ const Entity = (x, y, width, height, hits, speed, name, anims) => {
 
     const die = () => {
         property.remove();
+    }
+
+    const animate = () => {
+        property.style.backgroundPositionX = Structurer.bgPos(frame * action.nextFrame);
+
+        if ( frame >= action.frames - 1 ) {
+            frame = 0;
+        } else {
+            frame++;
+        }
+    }
+
+    const switchAnimation = (index) => {
+        action = ACTIONS[index];
+        property.style.backgroundPositionX = Structurer.bgPos(action.x);
+        property.style.backgroundPositionY = Structurer.bgPos(action.y);
     }
 
     const checkDeath = () => {
@@ -118,6 +138,14 @@ const Entity = (x, y, width, height, hits, speed, name, anims) => {
         }
     }
 
+    const checkRestingAction = () => {
+        if ( action === ACTIONS[0] ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     const getProperty = () => {
         return property;
     }
@@ -142,9 +170,11 @@ const Entity = (x, y, width, height, hits, speed, name, anims) => {
         damage,
         heal,
         die,
+        animate,
         checkDeath,
         checkPlayer,
         checkJump,
+        checkRestingAction,
         getProperty,
         getPosition,
         getHP,
@@ -155,20 +185,23 @@ const Entity = (x, y, width, height, hits, speed, name, anims) => {
     }
 }
 
-const Animation = (bgClass, frames, pace) => {
-
-}
-
-const Level = () => {
+const Action = (animClass, frames, x, y, nextFrame) => {
     return {
-
+        animClass,
+        frames,
+        x,
+        y,
+        nextFrame
     }
 }
 
 const Game = (() => {
+    const DEFAULT_PACE = 33;
+    const PACE = 50;
+
     const start = () => {
         Engine.initialize();
-        setInterval(loop ,33);
+        setInterval(loop, PACE);
     }
 
     const loop = () => {
@@ -235,6 +268,8 @@ const Engine = (() => {
 
         property.style.top = position.y + 'px';
         property.style.left = position.x + 'px';
+
+        entity.animate();
     }
 
     const addEntity = (entity) => {
@@ -283,12 +318,22 @@ const Controls = (() => {
 
 const Content = (() => {
     const player = () => {
-        let newPlayer = Entity(5, 5, 70, 80, 100, 30, 'player', ['entity', 'ken']);
+        let newPlayer = Entity(5, 5, 70, 80, 100, 30, 'player', ['entity', 'ken'], [
+            playerRestingAnimation()
+        ]);
 
         newPlayer.initialize();
 
         return newPlayer;
     }
+
+    const playerRestingAnimation = () => {
+        let newAnimation = Action('ken', 4, 0, 80, 70);
+
+        return newAnimation;
+    }
+
+    //const 
 
     return {
         player
@@ -317,9 +362,15 @@ const Structurer = (() => {
 
         return number;
     }
+
+    const bgPos = (number) => {
+        return '-' + (number) + 'px';
+    }
+
     return {
         abs,
-        limit
+        limit,
+        bgPos
     }
 })();
 
