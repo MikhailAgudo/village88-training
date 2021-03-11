@@ -264,7 +264,7 @@ const Engine = (() => {
 
     const test = () => {
         addEntity(player);
-        addEntity(Content.ball());
+        addEntity(Content.ball(150));
     }
 
     const update = () => {
@@ -299,6 +299,9 @@ const Engine = (() => {
             }
 
             AI.determine(entities[i]);
+            AI.spawn();
+
+            ticks++;
         }
 
         for ( let i = 0; i < entities.length; i++ ) {
@@ -370,11 +373,17 @@ const Engine = (() => {
         return player;
     }
 
+    const getTicks = () => {
+        return ticks;
+    }
+
     return {
         initialize,
         update,
         display,
         getPlayer,
+        addEntity,
+        getTicks,
         HEIGHT,
         WIDTH
     }
@@ -388,8 +397,16 @@ const AI = (() => {
                 break;
         }
     }
+
+    const spawn = () => {
+        if ( Engine.getTicks() % 40 === 0 ) {
+            Engine.addEntity(Content.ball((Engine.getTicks()%100) + 100));
+        }
+    }
+
     return {
-        determine
+        determine,
+        spawn
     }
 })();
 
@@ -441,8 +458,8 @@ const Content = (() => {
         return newPlayer;
     }
 
-    const ball = () => {
-        let newBall = Entity(700, 150, 20, 20, 2, 40, 'ball', ['entity', 'ball'], []);
+    const ball = (y) => {
+        let newBall = Entity(700, y, 20, 20, 2, 40, 'ball', ['entity', 'ball'], []);
 
         newBall.initialize();
 
