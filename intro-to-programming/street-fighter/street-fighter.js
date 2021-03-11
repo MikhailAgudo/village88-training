@@ -250,7 +250,7 @@ const Engine = (() => {
     let entities = [];
     let screen;
     let player;
-    let level;
+    let healthBar = document.getElementById('health-bar');
 
     const initialize = () => {
         screen = document.getElementById('screen');
@@ -318,6 +318,7 @@ const Engine = (() => {
     }
 
     const display = () => {
+        healthBar.style.width = Structurer.px(100 - player.getHP()[0]);
         for ( let i = 0; i < entities.length; i++ ) {
             draw(entities[i]);
         }
