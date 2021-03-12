@@ -1,0 +1,47 @@
+body {
+    background-color: black;
+    margin: 0;
+}
+
+#screen {
+    width: 600px;
+    height: 800px;
+    border: 1px solid gray;
+}
+
+.entity {
+    position: absolute
+}
+
+.block {
+    width: 16px;
+    height: 16px;
+}
+
+.block-i {
+    background: url('./tetris-Alex13Art.png') -63px -20px;
+}
+
+.block-j {
+    background: url('./tetris-Alex13Art.png') -46px -20px;
+}
+
+.block-l {
+    background: url('./tetris-Alex13Art.png') -46px -3px;
+}
+
+.block-o {
+    background: url('./tetris-Alex13Art.png') -63px -3px;
+}
+
+.block-s {
+    background: url('./tetris-Alex13Art.png') -97px 20px;
+}
+
+.block-t {
+    background: url('./tetris-Alex13Art.png') -114px -20px;
+}
+
+.block-z {
+    background: url('./tetris-Alex13Art.png') -114px -37px;
+}
