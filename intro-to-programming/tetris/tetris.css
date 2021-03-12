@@ -4,8 +4,8 @@ body {
 }
 
 #screen {
-    width: 600px;
-    height: 800px;
+    width: 160px;
+    height: 320px;
     border: 1px solid gray;
 }
 
@@ -35,7 +35,7 @@ body {
 }
 
 .block-s {
-    background: url('./tetris-Alex13Art.png') -97px 20px;
+    background: url('./tetris-Alex13Art.png') -97px -20px;
 }
 
 .block-t {

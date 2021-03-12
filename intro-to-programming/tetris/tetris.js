@@ -25,20 +25,6 @@ function initialize () {
     generateBlock();
 }
 
-function testBlock () {
-    field[0][0] = 4;
-    activeBlocks.push([0, 0]);
-
-    field[0][1] = 4;
-    activeBlocks.push([1, 0]);
-
-    field[1][0] = 4;
-    activeBlocks.push([0, 1]);
-
-    field[1][1] = 4;
-    activeBlocks.push([1, 1]);
-}
-
 function initializeScreen () {
     for ( let i = 0; i < FIELD_HEIGHT; i++ ) {
         let newRow = [];
@@ -80,10 +66,87 @@ function changeActive () {
 }
 
 function generateBlock () {
+    let randomNum = RNG(1, 7);
+
+    switch ( randomNum ) {
+        case 1:
+            makeIBlock();
+            break;
+        case 2:
+            makeJBlock();
+            break;
+        case 3:
+            makeLBlock();
+            break;
+        case 4:
+            makeOBlock();
+            break;
+        case 5:
+            makeSBlock();
+            break;
+        case 6:
+            makeTBlock();
+            break;
+        case 7:
+            makeZBlock();
+            break;
+    }
+}
+
+function makeIBlock () {
+    addBlock(1, 0, 0);
+    addBlock(1, 0, 1);
+    addBlock(1, 0, 2);
+    addBlock(1, 0, 3);
+    console.log('I');
+}
+
+function makeJBlock () {
+    addBlock(2, 0, 0);
+    addBlock(2, 0, 1);
+    addBlock(2, 1, 1);
+    addBlock(2, 2, 1);
+    console.log('J');
+}
+
+function makeLBlock () {
+    addBlock(3, 0, 0);
+    addBlock(3, 1, 0);
+    addBlock(3, 2, 0);
+    addBlock(3, 0, 1);
+    console.log('L');
+}
+
+function makeOBlock () {
     addBlock(4, 0, 0);
     addBlock(4, 1, 0);
-    addBlock(4, 2, 0);
+    addBlock(4, 1, 1);
     addBlock(4, 0, 1);
+    console.log('O');
+}
+
+function makeSBlock () {
+    addBlock(5, 1, 0);
+    addBlock(5, 2, 0);
+    addBlock(5, 1, 1);
+    addBlock(5, 0, 1);
+    console.log('S');
+}
+
+function makeTBlock () {
+    addBlock(6, 0, 0);
+    addBlock(6, 1, 0);
+    addBlock(6, 1, 1);
+    addBlock(6, 2, 0);
+    console.log('T');
+}
+
+function makeZBlock () {
+    addBlock(7, 0, 0);
+    addBlock(7, 1, 0);
+    addBlock(7, 1, 1);
+    addBlock(7, 2, 1);
+    console.log('Z');
 }
 
 function checkScore () {
@@ -92,7 +155,6 @@ function checkScore () {
 
         for ( let j = 0; j < blocks.length; j++ ) {
             if ( blocks[j].y === i ) {
-                console.log('score?');
                 sum++;
             }
         }
@@ -218,7 +280,6 @@ function checkCollision (block, x, y) {
         if ( block !== blocks[i] && checkActive(blocks[i]) === false ) {
             if ( block.x + x === blocks[i].x && 
                 block.y + y === blocks[i].y) {
-                console.log('collide');
                 return true;
             }
         }
@@ -252,7 +313,6 @@ function rotateBlock (block, x, y) {
     let oldY = block.y;
     block.x = xRotate(oldY, x, y);
     block.y = yRotate(oldX, x, y);
-    console.log(oldX + ',' + oldY + ' vs. ' + block.x + ',' + block.y);
 }
 
 function checkRotation (x, y) {
@@ -278,7 +338,6 @@ function getXAnchor () {
             min = activeBlocks[i].x;
         }
     }
-    console.log(min);
     return min;
 }
 
@@ -317,8 +376,8 @@ function display () {
 }
 
 function drawBlock (block) {
-    block.div.style.top = px(block.y * BLOCK_HEIGHT);
-    block.div.style.left = px(block.x * BLOCK_WIDTH);
+    block.div.style.top = px(block.y * BLOCK_HEIGHT + 1);
+    block.div.style.left = px(block.x * BLOCK_WIDTH + 1);
     screen.appendChild(block.div);
 }
 
@@ -359,6 +418,11 @@ function xRotate (oldY, x, y) {
 
 function yRotate (oldX, x, y) {
     return x + y - oldX;
+}
+
+function RNG (min, max) {
+    max = max - min;
+    return Math.floor(Math.random() * (max + 1)) + min;
 }
 
 document.onkeydown = (e) => {
