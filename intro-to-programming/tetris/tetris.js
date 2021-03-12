@@ -224,6 +224,12 @@ function moveActive (x, y) {
     }
 }
 
+function putItDown () {
+    while ( checkActiveCollision(0, 1) === false ) {
+        moveActive(0, 1);
+    }
+}
+
 function checkActiveCollision (x, y) {
     for ( let i = 0; i < activeBlocks.length; i++ ) {
         if ( checkMoveEnd(activeBlocks[i], y) === true ||
@@ -427,6 +433,9 @@ function RNG (min, max) {
 
 document.onkeydown = (e) => {
     switch ( e.keyCode ) {
+        case 32:
+            putItDown();
+            break;
         case 37:
             moveActive(-1, 0);
             break;
