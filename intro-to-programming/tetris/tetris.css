@@ -9,6 +9,16 @@ body {
     border: 1px solid gray;
 }
 
+#score {
+    position: absolute;
+    top: 350px;
+    left: 30px;
+    height: 40px;
+    width: 40px;
+    font-size: 30px;
+    color: white;
+}
+
 .entity {
     position: absolute
 }

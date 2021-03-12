@@ -11,6 +11,8 @@ let blocks = [];
 
 let screen = document.getElementById('screen');
 
+let score = document.getElementById('score');
+
 let loss = false;
 
 let activeBlocks = [];
@@ -161,9 +163,16 @@ function checkScore () {
 
         if ( sum === 10 ) {
             moveAll(i);
+            addScore();
             i++;
         }
     }
+}
+
+function addScore () {
+    let newScore = parseInt(score.textContent);
+    newScore++;
+    score.textContent = newScore;
 }
 
 function moveAll (y) {
