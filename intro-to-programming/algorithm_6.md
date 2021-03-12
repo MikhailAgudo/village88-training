@@ -2,7 +2,7 @@
 
 ### Correct
 ```javascript
-function negativeToZero (array) {
+function negativeToZero ( array ) {
 	for ( let i = 0; i < array.length; i++ ) {
 		if ( array[i] < 0 ) {
 			array[i] = 0;
