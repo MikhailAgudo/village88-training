@@ -11,6 +11,26 @@ body {
     background-repeat: repeat;
 }
 
+#score {
+    position: absolute;
+    top: 350px;
+    left: 30px;
+    height: 40px;
+    width: 40px;
+    font-size: 30px;
+    color: white;
+}
+
+#speed {
+    position: absolute;
+    top: 350px;
+    left: 150px;
+    height: 40px;
+    width: 60px;
+    font-size: 30px;
+    color: white;
+}
+
 .entity {
     position: absolute;
 }

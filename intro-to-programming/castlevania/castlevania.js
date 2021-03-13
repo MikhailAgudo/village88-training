@@ -3,11 +3,19 @@
 
 let WIDTH = 800;
 let HEIGHT = 240;
+
 let maxSpeed = 10;
 let minSpeed = 2;
-let overallSpeed = 5;
+let overallSpeed = 2;
+
+let score = 0;
+
 let castlePosition = 0;
+
 let screen = document.getElementById('screen');
+let scoreBoard = document.getElementById('score');
+let speedBoard = document.getElementById('speed');
+
 let ticks = 0;
 let entities = [];
 let content = Content();
@@ -26,6 +34,9 @@ function loop () {
 }
 
 function update () {
+    let alucardCollide = false;
+    let count = 0;
+
     for ( let i = 0; i < entities.length; i++ ) {
         applyGravity(entities[i]);
 
@@ -33,23 +44,35 @@ function update () {
 
         if ( entities[i].checkPlayer() === true ) {
             if ( checkCollision(entities[i]) === true ) {
-                adjustSpeed(-1);
+                alucardCollide = true;
             }
         } else if (checkCollision(entities[i]) === true ) {
+            adjustSpeed(-1);
+            adjustPosition(-5 * overallSpeed);
             entities[i].damage(1);
         }
 
+        ai.determine(entities[i]);
+    }
+
+    for ( let i = 0; i < entities.length; i++ ) {
         if ( entities[i].checkOutOfBounds() === true ) {
             entities[i].damage(1);
         }
 
         if ( entities[i].checkDeath() === true ) {
+            if ( alucardCollide === false ) {
+                count++;
+            }
             removeEntity(i);
             i--;
         }
-
-        ai.determine(entities[i]);
     }
+
+    if ( count > 0 ) {
+        addScore();
+    }
+
     ai.spawn();
 
     ticks++;
@@ -81,6 +104,15 @@ function checkCollision (entity) {
     return false;
 }
 
+function addScore () {
+    if ( alucard.getDeath() === false ) {
+        score += overallSpeed;
+        scoreBoard.textContent = 'Score: ' + score;
+        adjustSpeed(1);
+        adjustPosition(overallSpeed * 2);
+    }
+}
+
 function adjustSpeed (value) {
     overallSpeed += value;
 
@@ -89,6 +121,12 @@ function adjustSpeed (value) {
     } else if ( overallSpeed < minSpeed ) {
         overallSpeed = minSpeed;
     }
+
+    speedBoard.textContent = 'Speed: ' + overallSpeed;
+}
+
+function adjustPosition (value) {
+    alucard.moveOverride(value, 0);
 }
 
 function addEntity (entity) {
@@ -162,6 +200,8 @@ function shmupControls () {
 
 function Entity (x, y, height, width, hits, speed, name, classes, actions) {
     let div = document.createElement('div');
+
+    let death = false;
 
     let ACTIONS = actions;
     let action;
@@ -251,6 +291,7 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
 
     function die () {
         div.remove();
+        death = true;
     }
 
     function animate () {
@@ -355,6 +396,10 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
         return action;
     }
 
+    function getDeath () {
+        return death;
+    }
+
     return {
         speed,
         name,
@@ -377,7 +422,8 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
         getSize,
         getHP,
         getACTIONS,
-        getAction
+        getAction,
+        getDeath
     };
 }
 
@@ -513,13 +559,13 @@ function AI () {
     function determine (entity) {
         switch ( entity.name ) {
             case 'zombie':
-                entity.moveOverride(-10 - overallSpeed, 0);
+                entity.moveOverride(-10 - (2 * overallSpeed) - (RNG(0, 10)), 0);
                 break;
         }
     }
 
     function spawn () {
-        if ( ticks % (100 - overallSpeed) === 0 ) {
+        if ( ticks % (50 - overallSpeed - RNG(1, 10)) === 0 ) {
             addEntity(content.zombie(750, HEIGHT - 45));
         }
     }
