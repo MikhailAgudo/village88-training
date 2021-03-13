@@ -8,3 +8,11 @@ body {
     height: 600px;
     border: 1px solid gray;
 }
+
+.entity {
+    position: absolute;
+}
+
+.alucard {
+    background: url('./img/alucard.png');
+}
