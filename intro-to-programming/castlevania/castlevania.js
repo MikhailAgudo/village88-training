@@ -5,7 +5,7 @@ let WIDTH = 800;
 let HEIGHT = 240;
 let maxSpeed = 10;
 let minSpeed = 2;
-let overallSpeed = minSpeed;
+let overallSpeed = 5;
 let castlePosition = 0;
 let screen = document.getElementById('screen');
 let ticks = 0;
@@ -27,15 +27,25 @@ function loop () {
 
 function update () {
     for ( let i = 0; i < entities.length; i++ ) {
-        console.log(entities.length);
         applyGravity(entities[i]);
+
         entities[i].move();
+
+        if ( entities[i].checkPlayer() === true ) {
+            if ( checkCollision(entities[i]) === true ) {
+                adjustSpeed(-1);
+            }
+        } else if (checkCollision(entities[i]) === true ) {
+            entities[i].damage(1);
+        }
+
         if ( entities[i].checkOutOfBounds() === true ) {
             entities[i].damage(1);
         }
 
         if ( entities[i].checkDeath() === true ) {
             removeEntity(i);
+            i--;
         }
 
         ai.determine(entities[i]);
@@ -43,6 +53,42 @@ function update () {
     ai.spawn();
 
     ticks++;
+}
+
+function checkCollision (entity) {
+    for ( let i = 0; i < entities.length; i++ ) {
+        if ( entity !== entities[i] ) {
+            let currentEntityPosX = entity.getPosition().x;
+            let currentEntityPosY = entity.getPosition().y;
+            let currentEntityWidth = entity.getSize().width;
+            let currentEntityHeight = entity.getSize().height;
+
+            let targetEntityPosX = entities[i].getPosition().x;
+            let targetEntityPosY = entities[i].getPosition().y;
+            let targetEntityWidth = entities[i].getSize().width;
+            let targetEntityHeight = entities[i].getSize().height;
+
+            if ( currentEntityPosX < targetEntityPosX + targetEntityWidth && 
+                currentEntityPosX + currentEntityWidth > targetEntityPosX && 
+                currentEntityPosY < targetEntityPosY + targetEntityHeight && 
+                currentEntityPosY + currentEntityHeight > targetEntityPosY ) {
+                console.log('Collide');
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function adjustSpeed (value) {
+    overallSpeed += value;
+
+    if ( overallSpeed > maxSpeed ) {
+        overallSpeed = maxSpeed;
+    } else if ( overallSpeed < minSpeed ) {
+        overallSpeed = minSpeed;
+    }
 }
 
 function addEntity (entity) {
