@@ -6,7 +6,9 @@ let HEIGHT = 240;
 let screen = document.getElementById('screen');
 let ticks = 0;
 let entities = [];
-let alucard = Entity (5, 5, 48, 22, 5, 30, 'alucard', ['entity', 'alucard'], []);
+let content = Content();
+let alucard = Entity (5, 5, 48, 22, 5, 30, 'alucard', ['entity', 'alucard'], [content.playerRunningAnimation()]);
+alucard.initialize();
 
 function start () {
     shmupControls();
@@ -44,6 +46,7 @@ function applyGravity (entity) {
 
 function display (i) {
     if ( i < entities.length ) {
+        entities[i].animate();
         draw(entities[i]);
     
         i++;
@@ -113,6 +116,7 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
 
         if ( ACTIONS.length > 0 ) {
             action = ACTIONS[0];
+            switchAnimation(0);
         }
     }
     
@@ -140,7 +144,6 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
     }
 
     function rest () {
-        console.log(momentum.y);
         momentum.x = parseInt(momentum.x * 0.99);
         momentum.y = parseInt(momentum.y * 0.99);
     }
@@ -166,6 +169,29 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
         if ( HP.current > HP.full ) {
             HP.current = HP.full;
         }
+    }
+
+    function animate () {
+        if ( ACTIONS.length > 0 ) {
+            if ( action.frame < action.frames.length ) {
+                div.style.backgroundPositionX = bgPos(action.frames[action.frame].x);
+                div.style.backgroundPositionY = bgPos(action.frames[action.frame].y);
+                div.style.width = px(action.frames[action.frame].width);
+                div.style.height = px(action.frames[action.frame].height);
+
+                action.frame++;
+            } else {
+                action.frame = 0;
+
+                if ( action !== ACTIONS[0] ) {
+                    switchAnimation(0);
+                }
+            }
+        }
+    }
+
+    function switchAnimation (index) {
+        action = ACTIONS[index];
     }
 
     function checkOutOfBounds () {
@@ -222,6 +248,9 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
         initialize,
         move,
         accelerate,
+        damage,
+        animate,
+        checkDeath,
         getDiv,
         getMomentum,
         getPosition,
@@ -232,8 +261,62 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
     };
 }
 
-function Action () {
-    
+function Action (animClass, frames) {
+    let frame = 0;
+
+    function reset () {
+        frame = 0;
+    }
+
+    return {
+        animClass,
+        frame,
+        frames,
+        reset
+    }
+}
+
+function Frame (x, y, width, height) {
+    return {
+        x,
+        y,
+        width,
+        height
+    }
+}
+
+/*--------------------------------------------------------------------------------*/
+// CONTENT
+
+function Content () {
+    function playerRunningAnimation () {
+        let frames = [];
+
+        frames.push(Frame(14, 151, 32, 46));
+        frames.push(Frame(59, 152, 30, 45));
+        frames.push(Frame(103, 149, 29, 48));
+        frames.push(Frame(144, 153, 29, 44));
+        frames.push(Frame(192, 155, 29, 42));
+        frames.push(Frame(240, 156, 28, 41));
+        frames.push(Frame(286, 156, 27, 41));
+        frames.push(Frame(332, 153, 26, 44));
+        frames.push(Frame(373, 152, 27, 45));
+        frames.push(Frame(414, 152, 34, 45));
+        frames.push(Frame(462, 152, 39, 45));
+        frames.push(Frame(517, 154, 37, 44));
+        frames.push(Frame(569, 155, 39, 43));
+        frames.push(Frame(620, 154, 37, 43));
+        frames.push(Frame(673, 156, 39, 42));
+        frames.push(Frame(728, 154, 34, 44));
+
+        let newAnimation = Action('alucard', frames);
+
+        return newAnimation;
+    }
+
+    return {
+        playerRunningAnimation
+    }
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -241,6 +324,10 @@ function Action () {
 
 function px (value) {
     return value + 'px';
+}
+
+function bgPos (value) {
+    return '-' + value + 'px';
 }
 
 function abs (value) {
