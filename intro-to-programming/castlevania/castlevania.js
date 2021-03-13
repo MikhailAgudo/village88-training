@@ -3,13 +3,15 @@
 
 let WIDTH = 800;
 let HEIGHT = 240;
+let overallSpeed = 0;
 let screen = document.getElementById('screen');
 let ticks = 0;
 let entities = [];
 let content = Content();
 let alucard = Entity (5, 5, 48, 22, 5, 30, 'alucard', ['entity', 'alucard'], [
     content.playerRunningAnimation(),
-    content.playerJumpingAnimation()
+    content.playerJumpingAnimation(),
+    content.playerFallingAnimation()
 ]);
 alucard.initialize();
 
@@ -45,6 +47,9 @@ function removeEntity (i) {
 
 function applyGravity (entity) {
     if ( entity.checkBottom() === false ) {
+        if ( entity.checkPlayer() === true && entity.checkOngoingAnimation() === false ) {
+            entity.switchAnimation(2);
+        }
         entity.accelerate(0, 2, true);
     }
 }
@@ -75,11 +80,13 @@ function shmupControls () {
                 alucard.accelerate(-4, 0, true);
                 break;
             case 38:
-                alucard.accelerate(0, -25, false);
-                alucard.switchAnimation(1);
+                if ( alucard.checkBottom() ) {
+                    alucard.accelerate(0, -25, false);
+                    alucard.switchAnimation(1);
+                }
                 break;
             case 39:
-                alucard.accelerate(4, 0, true);
+                alucard.accelerate(1, 0, true);
                 break;
             case 40:
                 alucard.accelerate(0, 4, true);
@@ -179,8 +186,8 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
 
     function animate () {
         if ( ACTIONS.length > 0 ) {
-            if ( action.frame < action.frames.length ) {
-                if ( action.checkDelay() === true ) {
+            if ( checkOngoingAnimation() === true ) {
+                if ( action.tick % action.delay === 0 ) {
                     div.style.backgroundPositionX = bgPos(action.frames[action.frame].x);
                     div.style.backgroundPositionY = bgPos(action.frames[action.frame].y);
                     div.style.width = px(action.frames[action.frame].width);
@@ -189,10 +196,10 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
                     action.frame++;
                 }
 
-                action.count++;
+                action.tick++;
             } else {
                 action.frame = 0;
-                action.count = 0;
+                action.tick = 0;
 
                 if ( action !== ACTIONS[0] ) {
                     switchAnimation(0);
@@ -203,8 +210,16 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
 
     function switchAnimation (index) {
         action.frame = 0;
-        action.count = 0;
+        action.tick = 0;
         action = ACTIONS[index];
+    }
+
+    function checkOngoingAnimation () {
+        if ( action.frame < action.frames.length ) {
+            return true;
+        }
+
+        return false;
     }
 
     function checkOutOfBounds () {
@@ -229,6 +244,14 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
 
     function checkBottom () {
         if ( position.y + size.height + 1 > HEIGHT ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function checkPlayer () {
+        if ( name === 'alucard' ) {
             return true;
         }
 
@@ -272,8 +295,10 @@ function Entity (x, y, height, width, hits, speed, name, classes, actions) {
         damage,
         animate,
         switchAnimation,
+        checkOngoingAnimation,
         checkDeath,
         checkBottom,
+        checkPlayer,
         getDiv,
         getMomentum,
         getPosition,
@@ -288,21 +313,12 @@ function Action (animClass, frames, delay) {
     let frame = 0;
     let tick = 0;
 
-    function checkDelay () {
-        console.log(frame);
-        if ( tick % delay === 0 ) {
-            return true;
-        }
-
-        return false;
-    }
-
     return {
         animClass,
         frame,
-        count: tick,
+        tick,
         frames,
-        checkDelay
+        delay
     }
 }
 
@@ -354,14 +370,38 @@ function Content () {
         frames.push(Frame(835, 484, 30, 47));
         frames.push(Frame(875, 485, 43, 38));
 
-        let newAnimation = Action('alucard', frames, 100);
+        let newAnimation = Action('alucard', frames, 2);
+
+        return newAnimation;
+    }
+
+    function playerFallingAnimation () {
+        let frames = []
+
+        frames.push(Frame(9, 571, 43, 45));
+        //frames.push(Frame(62, 573, 44, 43));
+        frames.push(Frame(117, 576, 47, 40));
+        //frames.push(Frame(175, 577, 47, 39));
+        frames.push(Frame(233, 571, 45, 45));
+        //frames.push(Frame(288, 570, 44, 46));
+        frames.push(Frame(344, 566, 45, 50));
+        //frames.push(Frame(400, 559, 46, 57));
+        frames.push(Frame(461, 555, 45, 62));
+        //frames.push(Frame(519, 569, 45, 48));
+        frames.push(Frame(575, 571, 43, 46));
+        frames.push(Frame(630, 572, 40, 45));
+        frames.push(Frame(684, 572, 36, 44));
+        frames.push(Frame(734, 572, 31, 45));
+
+        let newAnimation = Action('alucard', frames, 2);
 
         return newAnimation;
     }
 
     return {
         playerRunningAnimation,
-        playerJumpingAnimation
+        playerJumpingAnimation,
+        playerFallingAnimation
     }
 }
 
