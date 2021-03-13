@@ -11,6 +11,7 @@ let screen = document.getElementById('screen');
 let ticks = 0;
 let entities = [];
 let content = Content();
+let ai = AI();
 let alucard = content.player();
 
 function start () {
@@ -36,7 +37,10 @@ function update () {
         if ( entities[i].checkDeath() === true ) {
             removeEntity(i);
         }
+
+        ai.determine(entities[i]);
     }
+    ai.spawn();
 
     ticks++;
 }
@@ -359,19 +363,24 @@ function Frame (x, y, width, height) {
 function Content () {
     function player () {
         let alucard = Entity (60, HEIGHT - 48, 48, 22, 5, 30, 'alucard', ['entity', 'alucard'], [
-            content.playerRunningAnimation(),
-            content.playerJumpingAnimation(),
-            content.playerFallingAnimation()
+            playerRunningAnimation(),
+            playerJumpingAnimation(),
+            playerFallingAnimation()
         ]);
+
         alucard.initialize();
 
         return alucard;
     }
 
     function zombie (x, y) {
-        let zombie = Entity (x, y, 0, 0, 1, 0, 'zombie', ['entity', 'zombie'], [
-
+        let zombie = Entity (x, y, 30, 45, 1, 0, 'zombie', ['entity', 'zombie'], [
+            zombieRunningAnimation()
         ]);
+
+        zombie.initialize();
+
+        return zombie;
     }
 
     function playerRunningAnimation () {
@@ -417,12 +426,6 @@ function Content () {
     function playerFallingAnimation () {
         let frames = []
 
-        //frames.push(Frame(9, 571, 43, 45));
-        //frames.push(Frame(62, 573, 44, 43));
-        //frames.push(Frame(117, 576, 47, 40));
-        //frames.push(Frame(175, 577, 47, 39));
-        //frames.push(Frame(233, 571, 45, 45));
-        //frames.push(Frame(288, 570, 44, 46));
         frames.push(Frame(344, 566, 45, 50));
         frames.push(Frame(400, 559, 46, 57));
         frames.push(Frame(461, 555, 45, 62));
@@ -430,18 +433,54 @@ function Content () {
         frames.push(Frame(575, 571, 43, 46));
         frames.push(Frame(630, 572, 40, 45));
         frames.push(Frame(684, 572, 36, 44));
-        //frames.push(Frame(734, 572, 31, 45));
 
         let newAnimation = Action('alucard', frames, 2);
 
         return newAnimation;
     }
 
+    function zombieRunningAnimation () {
+        let frames = []
+
+        frames.push(Frame(1, 2, 30, 45));
+        frames.push(Frame(33, 2, 28, 45));
+        frames.push(Frame(61, 9, 31, 39));
+        frames.push(Frame(94, 15, 33, 32));
+        frames.push(Frame(61, 9, 31, 39));
+        frames.push(Frame(33, 2, 28, 45));
+
+        let newAnimation = Action('zombie', frames, 1);
+
+        return newAnimation;
+    }
+
     return {
         player,
-        playerRunningAnimation,
-        playerJumpingAnimation,
-        playerFallingAnimation
+        zombie
+    }
+}
+
+/*--------------------------------------------------------------------------------*/
+// AI
+
+function AI () {
+    function determine (entity) {
+        switch ( entity.name ) {
+            case 'zombie':
+                entity.moveOverride(-10 - overallSpeed, 0);
+                break;
+        }
+    }
+
+    function spawn () {
+        if ( ticks % (100 - overallSpeed) === 0 ) {
+            addEntity(content.zombie(750, HEIGHT - 45));
+        }
+    }
+
+    return {
+        determine,
+        spawn
     }
 }
 

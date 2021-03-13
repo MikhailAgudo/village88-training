@@ -17,10 +17,9 @@ body {
 
 .alucard {
     background: url('img/alucard.png') -10px -14px;
-    width: 22px;
-    height: 48px;
 }
 
 .zombie {
     background: url('./img/zombie.png');
+    transform: scaleX(-1);
 }
