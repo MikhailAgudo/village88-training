@@ -4,7 +4,7 @@ body {
 }
 
 #screen {
-    width: 600px;
-    height: 800px;
+    width: 800px;
+    height: 600px;
     border: 1px solid gray;
 }
