@@ -5,7 +5,7 @@ body {
 
 #screen {
     width: 800px;
-    height: 600px;
+    height: 240px;
     border: 1px solid gray;
 }
 
@@ -14,5 +14,7 @@ body {
 }
 
 .alucard {
-    background: url('./img/alucard.png');
+    background: url('img/alucard.png') -10px -14px;
+    width: 22px;
+    height: 48px;
 }
