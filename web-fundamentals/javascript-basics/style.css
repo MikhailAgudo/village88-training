@@ -1,4 +1,49 @@
 * {
     margin: 0;
     padding: 0;
+    color:white;
+}
+
+body {
+    background-color: #12355B;
+}
+
+ul {
+    margin-left: 20px;
+}
+
+p span {
+    color: #6F6FB2;
+}
+
+#main {
+    width: 970px;
+}
+
+header {
+    background-color: red;
+}
+
+#navigation {
+    background-color: #087E8B;
+    display: inline-block;
+    vertical-align: top;
+}
+
+
+#content {
+    background-color: #0C1821;
+    display: inline-block;
+    vertical-align: top;
+    width: 670px;
+}
+
+#outside {
+    background-color: #5C6672;
+}
+
+.container {
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
 }
