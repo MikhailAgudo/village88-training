@@ -1,0 +1,42 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #D6D1B1;
+    width: 800px;
+}
+
+header {
+    margin:  20px 160px 0px 160px;
+}
+
+header h1 {
+    text-align: center;
+    display: inline;
+}
+
+header img {
+    height: 50px;
+    width: 100px;
+    background-color: white;
+    display: inline;
+}
+
+section {
+    margin: 20px;
+}
+
+section img {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    padding: 20px;
+    border: 3px solid black;
+    background-color: #77B6EA;
+}
+
+.transparent {
+    background-color: #FC6471;
+}
