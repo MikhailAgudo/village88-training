@@ -1,0 +1,180 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background-color: #265175;
+    width: 970px;
+    color: white;
+}
+
+header {
+    margin: 10px;
+}
+
+header img {
+    height: 110px;
+}
+
+header p {
+    margin: 0 0 2px 100px;
+}
+
+header ul {
+    list-style-type: none;
+    background-color: #497FAB;
+    display: inline;
+    padding: 15px 20px;
+    border-radius: 5px;
+    margin: 15px 30px;
+    box-shadow: 2px 2px #1F1F1F;
+}
+
+header ul li {
+    display: inline;
+    font-size: 25px;
+    margin: 0 20px;
+}
+
+header a {
+    text-decoration: none;
+    color: white;
+}
+
+input {
+    border: 2px solid #9A9A9A;
+    padding: 10px;
+    display: inline;
+}
+
+section {
+    padding: 30px 30px;
+}
+
+footer {
+    padding: 50px 20px 5px 20px;
+    background-image: linear-gradient(#265175, #3675AA);
+    color: #89BAE3;
+}
+
+footer ul {
+    list-style-type: none;
+    margin-left: 100px;
+}
+
+footer li {
+    display: inline;
+    margin: 0 25px;
+}
+
+footer a {
+    text-decoration: none;
+    font-size: 20px;
+    color: #89BAE3;
+}
+
+footer p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+#search-bar {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 220px;
+}
+
+#search-bar a {
+    color: #CFAF02;
+}
+
+#search-bar span {
+    color: black;
+}
+
+#search-bar form {
+    background-color: #444444;
+    border-radius: 10px;
+    padding: 10px 40px;
+    box-shadow: 2px 2px #1F1F1F;
+}
+
+#search-button {
+    background-color: #265175;
+    border-radius: 5px;
+    color: white;
+    padding: 6px;
+}
+
+#navigation {
+    display: inline-block;
+    width: 250px;
+}
+
+#navigation a {
+    color: white;
+    font-size: 18px;
+}
+
+#navigation ul {
+    list-style-type: none;
+}
+
+#navigation li {
+    text-align: center;
+    line-height: 30px;
+}
+
+#description {
+    display: inline-block;
+    width: 620px;
+    vertical-align: top;
+}
+
+#description p {
+    text-align: center;
+}
+
+#description h2 {
+    text-align: center;
+    color: #FFD343;
+    font-style: italic;
+}
+
+#description h3 {
+    text-align: center;
+}
+
+#recommendations {
+    background-color: white;
+    color: black;
+    padding: 0 100px;
+}
+
+.square {
+    display: inline-block;
+    border-top: 5px solid #75A8D3;
+    vertical-align: top;
+    width: 350px;
+    margin: 10px 10px;
+}
+
+.square h3 {
+    text-align: center;
+}
+
+.square p {
+    text-align: center;
+}
+
+.square ul {
+    text-align: center;
+    margin-left: 40px;
+}
+
+.square a {
+    text-decoration: none;
+    color: #77A9D3
+}
